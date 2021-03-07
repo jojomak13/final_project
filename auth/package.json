@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node-dev index.ts",
+    "start": "ts-node-dev --poll index.ts",
     "build": "rm -rf ./dist && tsc"
   },
   "repository": {

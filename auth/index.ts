@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
 import { app } from './src/app';
 import { env } from './src/helpers/config';
-import { Country } from './src/models/Country';
-import { Gender } from './src/models/enums/gender';
 import { Patient } from './src/models/Patient';
+// import { Country } from './src/models/Country';
+// import { Gender } from './src/models/enums/gender';
 
 const setup = async () => {
   try {
