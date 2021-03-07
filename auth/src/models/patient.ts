@@ -1,4 +1,4 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, model } from 'mongoose';
 import { CountryDocument } from './Country';
 import { Gender } from './enums/gender';
 
@@ -29,49 +29,58 @@ interface PatientModel extends mongoose.Model<PatientDocument> {
   build(atters: Patientatters): PatientDocument;
 }
 
-const PatientSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
+const PatientSchema = new Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    phone: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    gender: {
+      type: String,
+      enum: Object.values(Gender),
+      required: true,
+    },
+    date_of_birth: {
+      type: Schema.Types.Date,
+      required: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    image: {
+      type: String,
+    },
+    country: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: 'Country',
+    },
   },
-  email: {
-    type: String,
-    required: true,
-  },
-  phone: {
-    type: String,
-    required: true,
-  },
-  gender: {
-    type: String,
-    enum: Gender,
-    required: true,
-  },
-  date_of_birth: {
-    type: Schema.Types.Date,
-    required: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  image: {
-    type: String,
-  },
-  country: {
-    type: Schema.Types.ObjectId,
-    required: true,
-    ref: 'Country',
-  },
-});
+  {
+    toJSON: {
+      transform(_doc, ret) {
+        ret.id = ret._id;
+        delete ret._id;
+      },
+    },
+  }
+);
 
 PatientSchema.statics.build = (atters: Patientatters) => {
   return new Patient(atters);
 };
 
-const Patient = mongoose.model<PatientDocument, PatientModel>(
-  'Patient',
-  PatientSchema
-);
+const Patient = model<PatientDocument, PatientModel>('Patient', PatientSchema);
 
 export { Patient };
