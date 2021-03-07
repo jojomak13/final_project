@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { model, Schema } from 'mongoose';
 
 interface CountryAttrs {
   name: string;
@@ -19,7 +19,7 @@ interface CountryModel extends mongoose.Model<CountryDocument> {
   build(atters: CountryAttrs): CountryDocument;
 }
 
-const CountrySchema = new mongoose.Schema(
+const CountrySchema = new Schema(
   {
     name: {
       type: String,
@@ -52,9 +52,6 @@ CountrySchema.statics.build = (atters: CountryAttrs) => {
   return new Country(atters);
 };
 
-const Country = mongoose.model<CountryDocument, CountryModel>(
-  'Country',
-  CountrySchema
-);
+const Country = model<CountryDocument, CountryModel>('Country', CountrySchema);
 
 export { Country };

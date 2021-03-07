@@ -1,4 +1,5 @@
 import mongoose, { Schema, model } from 'mongoose';
+import { Country } from './Country';
 import { CountryDocument } from './Country';
 import { Gender } from './enums/gender';
 
@@ -64,10 +65,11 @@ const PatientSchema = new Schema(
     country: {
       type: Schema.Types.ObjectId,
       required: true,
-      ref: 'Country',
+      ref: Country,
     },
   },
   {
+    versionKey: false,
     toJSON: {
       transform(_doc, ret) {
         ret.id = ret._id;

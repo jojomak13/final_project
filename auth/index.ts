@@ -1,9 +1,6 @@
 import mongoose from 'mongoose';
 import { app } from './src/app';
 import { env } from './src/helpers/config';
-import { Patient } from './src/models/Patient';
-// import { Country } from './src/models/Country';
-// import { Gender } from './src/models/enums/gender';
 
 const setup = async () => {
   try {
@@ -18,30 +15,6 @@ const setup = async () => {
   } catch (err) {
     console.log('DB Connection Error');
   }
-
-  const p = await Patient.findOne({}).populate('Country');
-
-  console.log(p);
-  console.log(p!.populated('Country'));
-
-  // const c = Country.build({
-  //   name: 'egypt',
-  //   timezone: 'klf/dsf',
-  //   currency: 'egp',
-  //   code: '3434',
-  // });
-  // await c.save();
-
-  // const p = Patient.build({
-  //   name: 'test',
-  //   email: 'test@tes.com',
-  //   phone: '3423243234',
-  //   country: c,
-  //   date_of_birth: new Date(),
-  //   gender: Gender.MALE,
-  //   password: '33242343',
-  // });
-  // await p.save();
 
   const port = env('PORT', 8080);
   app.listen(port, () => {

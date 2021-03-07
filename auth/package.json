@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "ts-node-dev --poll --cache-directory=./cache index.ts",
     "start": "ts-node-dev --poll index.ts",
     "build": "rm -rf ./dist && tsc"
   },
@@ -28,6 +29,6 @@
   "dependencies": {
     "express": "^4.17.1",
     "joi": "^17.4.0",
-    "mongoose": "5.11.8"
+    "mongoose": "^5.11.19"
   }
 }
