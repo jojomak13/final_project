@@ -1,0 +1,14 @@
+type Patient {
+  id: ID!
+  name: String!
+  email: String!
+  phone: String!
+  gender: String!
+  date_of_birth: String!
+  image: String
+  country: Country!
+}
+
+type PatientActions {
+  signup(username: String, password: String): Patient
+}
