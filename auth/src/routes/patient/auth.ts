@@ -7,7 +7,11 @@ const router = Router();
 
 router.post('/register', async (req: Request, res: Response) => {
   try {
-    const data = await SignupRequest.validateAsync(req.body);
+    const data = await SignupRequest.validateAsync(req.body, {
+      abortEarly: false,
+      stripUnknown: true,
+    });
+
     AuthController.signup(data, req, res);
   } catch (err) {
     throw new RequestValidationError(err);
