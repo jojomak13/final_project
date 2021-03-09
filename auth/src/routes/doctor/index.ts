@@ -3,6 +3,6 @@ import { authRouter } from './auth';
 
 const router = Router();
 
-router.use(authRouter);
+router.use('/auth', authRouter);
 
 export { router as doctorRouter };

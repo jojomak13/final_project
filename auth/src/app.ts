@@ -1,5 +1,6 @@
-import express, { Express, Request, Response, NextFunction } from 'express';
+import express, { Express } from 'express';
 import 'express-async-errors';
+import { errorHandler, NotFoundError } from '@hti/common';
 import { router } from './routes';
 
 const app: Express = express();
@@ -11,10 +12,12 @@ app.set('trust proxy', true);
 // load routes
 app.use(router);
 
-// Error Handler
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  // @ts-ignore
-  res.status(400).send(err.serialize());
+//  NotFound Handler
+app.use(() => {
+  throw new NotFoundError();
 });
+
+// Error Handler
+app.use(errorHandler);
 
 export { app };
