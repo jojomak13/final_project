@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/jojomak13/final-project#readme",
   "devDependencies": {
+    "@types/bcrypt": "^3.0.0",
     "@types/express": "^4.17.11",
     "@types/mongoose": "^5.10.3",
     "@types/node": "^14.14.31",
@@ -28,6 +29,7 @@
   },
   "dependencies": {
     "@hti/common": "0.0.4",
+    "bcrypt": "^5.0.1",
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",
     "joi": "^17.4.0",
