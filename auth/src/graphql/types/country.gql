@@ -1,7 +1,0 @@
-type Country {
-  id: ID!
-  name: String!
-  code: String!
-  currency: String!
-  timezone: String!
-}

@@ -1,8 +1,0 @@
-type Query {
-  patient: Patient
-  doctor: Doctor
-}
-
-type Mutation {
-  patientActions: PatientActions
-}
