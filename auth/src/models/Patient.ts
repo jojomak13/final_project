@@ -1,4 +1,5 @@
 import mongoose, { Schema, model } from 'mongoose';
+import { Password } from '../helpers/password';
 import { Country } from './Country';
 import { CountryDocument } from './Country';
 import { Gender } from './enums/gender';
@@ -82,6 +83,15 @@ const PatientSchema = new Schema(
 PatientSchema.statics.build = (atters: Patientatters) => {
   return new Patient(atters);
 };
+
+PatientSchema.pre('save', async function (done) {
+  if (this.isModified('password')) {
+    const hashedPassword = await Password.hash(this.get('password'));
+    this.set('password', hashedPassword);
+  }
+
+  done(null);
+});
 
 const Patient = model<PatientDocument, PatientModel>('Patient', PatientSchema);
 
