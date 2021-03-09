@@ -29,6 +29,7 @@
   "dependencies": {
     "@hti/common": "0.0.3",
     "express": "^4.17.1",
+    "express-async-errors": "^3.1.1",
     "joi": "^17.4.0",
     "mongoose": "^5.11.19"
   }

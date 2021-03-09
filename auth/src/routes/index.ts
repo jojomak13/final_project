@@ -1,10 +1,11 @@
 import { Router } from 'express';
-import { env } from '../helpers/config';
+import { PatientRouter } from './patient';
 
 const router = Router();
+router.use('/client', PatientRouter);
 
 router.get('/', async (_req, res) => {
-  res.json({ name: 'Auth Service', port: env('PORT', 8080) });
+  res.json({ name: 'Auth Service' });
 });
 
 export { router };
