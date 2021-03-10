@@ -20,9 +20,9 @@ const SignupRequest = Joi.object({
     .valid(...Object.values(Gender))
     .required(),
 
-  date_of_birth: Joi.date().min('1-1-2005').required(),
+  date_of_birth: Joi.date().max('1-1-2005').required(),
 
-  country: Joi.number().required(),
-});
+  country: Joi.string().required(),
+}).with('password', 'repeat_password');
 
 export { SignupRequest };
