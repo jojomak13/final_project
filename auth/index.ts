@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { app } from './src/app';
 import { env } from './src/helpers/config';
+import { Country } from './src/models/Country';
 
 const setup = async () => {
   try {

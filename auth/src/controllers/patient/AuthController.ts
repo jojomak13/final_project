@@ -3,14 +3,21 @@ import { Request, Response } from 'express';
 import { Country } from '../../models/Country';
 import { Patient } from '../../models/Patient';
 
-
 export const signup = async (data: any, req: Request, res: Response) => {
   console.log(data);
 
-  const newCountry = Country.build({ code: "123", currency: "132", name: "gremany", timezone: "45" })
+  const newCountry = Country.build({
+    code: '123',
+    currency: '132',
+    name: 'gremany',
+    timezone: '45',
+  });
   await newCountry.save();
 
-  const patient = await Patient.findOne({ email: data.email, phone: data.phone });
+  const patient = await Patient.findOne({
+    email: data.email,
+    phone: data.phone,
+  });
   if (patient) {
     throw new BadRequestError('email already exist', req.statusCode);
   }
@@ -18,8 +25,15 @@ export const signup = async (data: any, req: Request, res: Response) => {
   const newPatient = Patient.build(data);
   await newPatient.save();
 
-  res.send('acount created successfully');
+  return res.json({
+    status: true,
+    msg: 'acount created successfully',
+  });
+};
 
-  return newPatient;
-
+export const me = async (req: Request, res: Response) => {
+  return res.json({
+    status: true,
+    data: req.user,
+  });
 };
