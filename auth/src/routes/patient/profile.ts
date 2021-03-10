@@ -1,4 +1,7 @@
-import { Router } from 'express';
+import { RequestValidationError } from '@hti/common';
+import { Router, Request, Response } from 'express';
+import * as profileController from '../../controllers/patient/ProfileController';
+import { UpdateProfileRequest } from '../../requests/patient/UpdateProfileRequest';
 
 const router = Router();
 
@@ -6,8 +9,15 @@ router.get('/', async (req, res) => {
   res.json('welcome from profile');
 });
 
-router.patch('/', async (req, res) => {
-  res.json('edit profile');
+router.patch('/', async (req: Request, res: Response) => {
+  const data = await UpdateProfileRequest.validateAsync(req.body, {
+    abortEarly: false,
+    stripUnknown: true,
+  })
+    .catch((err) => {
+      throw new RequestValidationError(err);
+    });
+  await profileController.update(data, req, res);
 });
 
 export { router as ProfileRouter };

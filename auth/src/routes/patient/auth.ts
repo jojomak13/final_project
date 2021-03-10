@@ -1,7 +1,6 @@
-import { auth, BadRequestError, RequestValidationError } from '@hti/common';
+import { auth, RequestValidationError } from '@hti/common';
 import { Router, Request, Response } from 'express';
 import * as AuthController from '../../controllers/patient/AuthController';
-import { Patient } from '../../models/Patient';
 import { LoginRequest } from '../../requests/patient/LoginRequest';
 import { SignupRequest } from '../../requests/patient/SignupRequest';
 
