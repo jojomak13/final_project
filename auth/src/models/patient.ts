@@ -1,7 +1,6 @@
 import mongoose, { Schema, model } from 'mongoose';
 import { Password } from '../helpers/password';
-import { Country } from './Country';
-import { CountryDocument } from './Country';
+import { Country, CountryDocument } from './Country';
 import { Gender } from './enums/gender';
 
 interface Patientatters {
