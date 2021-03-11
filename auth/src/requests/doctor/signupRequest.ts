@@ -2,27 +2,27 @@ import Joi from 'joi';
 import { Gender } from '../../models/enums/gender';
 
 const SignupRequest = Joi.object({
-    name: Joi.string().min(3).max(255).required(),
+  name: Joi.string().min(3).max(255).required(),
 
-    password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{6,30}$')).required(),
+  password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{6,30}$')).required(),
 
-    repeat_password: Joi.ref('password'),
+  repeat_password: Joi.ref('password'),
 
-    email: Joi.string()
-        .email({
-            minDomainSegments: 2,
-        })
-        .required(),
+  email: Joi.string()
+    .email({
+      minDomainSegments: 2,
+    })
+    .required(),
 
-    phone: Joi.string().trim().pattern(new RegExp('^[+0-9]{7,14}$')).required(),
+  phone: Joi.string().trim().pattern(new RegExp('^[+0-9]{7,14}$')).required(),
 
-    gender: Joi.any()
-        .valid(...Object.values(Gender))
-        .required(),
+  gender: Joi.any()
+    .valid(...Object.values(Gender))
+    .required(),
 
-    date_of_birth: Joi.date().max('1-1-2005').required(),
+  date_of_birth: Joi.date().max('1-1-2005').required(),
 
-    country: Joi.string().required(),
+  country: Joi.string().required(),
 }).with('password', 'repeat_password');
 
 export { SignupRequest };
