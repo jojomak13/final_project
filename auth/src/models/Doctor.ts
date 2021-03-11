@@ -2,6 +2,7 @@ import mongoose, { Schema } from 'mongoose';
 import { certificateSchema } from '../database/migration/certificateSchema';
 import { educationSchema } from '../database/migration/educationSchema';
 import { experienceSchema } from '../database/migration/experienceSchema';
+import { Password } from '../helpers/password';
 import { CountryDocument } from './Country';
 import { Gender } from './enums/gender';
 import { Prefix } from './enums/prefix';
@@ -95,7 +96,6 @@ const DoctorSchema = new mongoose.Schema({
         value: String,
       },
     ],
-    required: true,
   },
   email: {
     type: String,
@@ -123,7 +123,7 @@ const DoctorSchema = new mongoose.Schema({
   image: {
     type: String,
   },
-  countrey: {
+  country: {
     type: Schema.Types.ObjectId,
     ref: 'Country',
     required: true,
@@ -135,7 +135,6 @@ const DoctorSchema = new mongoose.Schema({
   prefix: {
     type: String,
     enum: Prefix,
-    required: true,
   },
   biography: {
     type: [
@@ -144,16 +143,13 @@ const DoctorSchema = new mongoose.Schema({
         value: String,
       },
     ],
-    required: true,
   },
   job: {
     type: Schema.Types.ObjectId,
     ref: 'Job',
-    required: true,
   },
   fees: {
     type: Object,
-    required: true,
   },
   new_fees: {
     type: Object,
@@ -168,7 +164,6 @@ const DoctorSchema = new mongoose.Schema({
         ref: 'Language',
       },
     ],
-    required: true,
   },
   specializations: {
     type: [
@@ -177,7 +172,6 @@ const DoctorSchema = new mongoose.Schema({
         ref: 'Specialization',
       },
     ],
-    required: true,
   },
   main_focus: {
     type: [
@@ -186,25 +180,32 @@ const DoctorSchema = new mongoose.Schema({
         ref: 'Specialization',
       },
     ],
-    required: true,
   },
   experiences: {
     type: [experienceSchema],
-    required: true,
   },
   certificates: {
     type: [certificateSchema],
-    required: true,
   },
   educations: {
     type: [educationSchema],
-    required: true,
   },
 });
+
+DoctorSchema.set('versionKey', 'version');
 
 DoctorSchema.statics.build = (atters: DoctorAttrs) => {
   return new Doctor(atters);
 };
+
+DoctorSchema.pre('save', async function (done) {
+  if (this.isModified('password')) {
+    const hashedPassword = await Password.hash(this.get('password'));
+    this.set('password', hashedPassword);
+  }
+
+  done(null);
+});
 
 const Doctor = mongoose.model<DoctorDocument, DoctorModel>(
   'Doctor',
