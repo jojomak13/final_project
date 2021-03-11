@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import { app } from './src/app';
 
 const setup = async () => {
-  const envKey = ['PORT', 'APP_KEY', 'DB_URI'];
+  const envKey = ['PORT', 'APP_KEY', 'DB_URI', 'TOKEN_EXPIRE_PERIOD'];
 
   try {
     envKey.forEach((key) => {

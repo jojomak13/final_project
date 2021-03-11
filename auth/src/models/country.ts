@@ -48,6 +48,8 @@ const CountrySchema = new Schema(
   }
 );
 
+CountrySchema.set('versionKey', 'version');
+
 CountrySchema.statics.build = (atters: CountryAttrs) => {
   return new Country(atters);
 };

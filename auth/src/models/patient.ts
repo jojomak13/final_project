@@ -75,10 +75,13 @@ const PatientSchema = new Schema(
       transform(_doc, ret) {
         ret.id = ret._id;
         delete ret._id;
+        delete ret.password;
       },
     },
   }
 );
+
+PatientSchema.set('versionKey', 'version');
 
 PatientSchema.statics.build = (atters: Patientatters) => {
   return new Patient(atters);

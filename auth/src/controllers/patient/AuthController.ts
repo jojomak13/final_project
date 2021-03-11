@@ -1,8 +1,8 @@
 import { BadRequestError, DBValidationError } from '@hti/common';
 import { Request, Response } from 'express';
+import { Auth } from '../../helpers/Auth';
 import { Password } from '../../helpers/password';
 import { Patient } from '../../models/Patient';
-import jwt from 'jsonwebtoken';
 
 export const signup = async (data: any, req: Request, res: Response) => {
   const patient = await Patient.findOne().or([
@@ -33,27 +33,20 @@ export const signup = async (data: any, req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
-  const patient = await Patient.findOne({ email });
+  const patient = await Patient.findOne({ email }).populate('country');
 
   if (!patient || !(await Password.compare(password, patient.password))) {
     throw new BadRequestError('Invalid Credentials');
   }
 
-  const token = await jwt.sign(
-    {
-      id: patient.id,
-      email: patient.email,
-    },
-    process.env.APP_KEY!
-  );
+  const token = await Auth.login(patient);
 
   res.json({ status: true, data: { token } });
 };
 
 export const me = async (req: Request, res: Response) => {
-  const patient = await Patient.findById(req.user?.id).populate('country');
   return res.json({
     status: true,
-    data: patient,
+    data: req.user,
   });
 };
