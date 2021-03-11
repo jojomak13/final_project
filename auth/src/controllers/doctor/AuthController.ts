@@ -2,27 +2,27 @@ import { BadRequestError, DBValidationError } from '@hti/common';
 import { Request, Response } from 'express';
 import { Auth } from '../../helpers/Auth';
 import { Password } from '../../helpers/password';
-import { Patient } from '../../models/Patient';
+import { Doctor } from '../../models/Doctor';
 
-export const signup = async (data: any, req: Request, res: Response) => {
-  const patient = await Patient.findOne().or([
+export const signup = async (data: any, _req: Request, res: Response) => {
+  const doctor = await Doctor.findOne().or([
     { email: data.email },
     { phone: data.phone },
   ]);
 
-  if (patient) {
+  if (doctor) {
     const errors = [];
 
-    if (data.email === patient.email)
+    if (data.email === doctor.email)
       errors.push({ message: 'email already exist', field: 'email' });
-    if (data.phone === patient.phone)
+    if (data.phone === doctor.phone)
       errors.push({ message: 'phone already exist', field: 'phone' });
 
     throw new DBValidationError(errors);
   }
 
-  const newPatient = Patient.build(data);
-  await newPatient.save();
+  const newDoctor = Doctor.build(data);
+  await newDoctor.save();
 
   return res.status(201).json({
     status: true,
@@ -33,13 +33,13 @@ export const signup = async (data: any, req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
-  const patient = await Patient.findOne({ email }).populate('country');
+  const doctor = await Doctor.findOne({ email }).populate('country');
 
-  if (!patient || !(await Password.compare(password, patient.password))) {
+  if (!doctor || !(await Password.compare(password, doctor.password))) {
     throw new BadRequestError('Invalid Credentials');
   }
 
-  const token = await Auth.login(patient);
+  const token = await Auth.login(doctor);
 
   res.json({ status: true, data: { token } });
 };
