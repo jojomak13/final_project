@@ -51,9 +51,7 @@ export const login = async (req: Request, res: Response) => {
 };
 
 export const me = async (req: Request, res: Response) => {
-  const patient = await Patient.findById(req.user?.id);
-  patient?.populate('country')
-
+  const patient = await Patient.findById(req.user?.id).populate('country');
   return res.json({
     status: true,
     data: patient,
