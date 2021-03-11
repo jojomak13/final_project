@@ -4,16 +4,16 @@ const create = Joi.object({
   name: Joi.array()
     .items(
       Joi.object({
-        lang: Joi.string(),
-        value: Joi.string(),
+        lang: Joi.string().required(),
+        value: Joi.string().required(),
       })
     )
     .required(),
   title: Joi.array()
     .items(
       Joi.object({
-        lang: Joi.string(),
-        value: Joi.string(),
+        lang: Joi.string().required(),
+        value: Joi.string().required(),
       })
     )
     .required(),

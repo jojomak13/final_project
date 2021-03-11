@@ -6,16 +6,34 @@ import ExperienceRequest from '../../requests/doctor/profile/ExperienceRequest';
 import { RequestValidationError } from '@hti/common';
 import CertificateRequest from '../../requests/doctor/profile/CertificateRequest';
 import EducationRequest from '../../requests/doctor/profile/EducationRequest';
+import { BasicInfoRequest } from '../../requests/doctor/profile/BasicInfoRequest';
+import { AboutmeRequest } from '../../requests/doctor/profile/AboutmeRequest';
 
 const router = Router();
 
 // Basic Info
 router.get('/info', BasicInfoController.edit);
-router.patch('/info', BasicInfoController.update);
+router.patch('/info', async (req: Request, res: Response) => {
+  const data = await BasicInfoRequest.validateAsync(req.body, {
+    abortEarly: false,
+    stripUnknown: true,
+  }).catch((err) => {
+    throw new RequestValidationError(err);
+  });
+  await BasicInfoController.update(data, req, res);
+});
 
 // About Me
 router.get('/about', AboutmeController.edit);
-router.patch('/about', AboutmeController.update);
+router.patch('/about', async (req: Request, res: Response) => {
+  const data = await AboutmeRequest.validateAsync(req.body, {
+    abortEarly: false,
+    stripUnknown: true,
+  }).catch((err) => {
+    throw new RequestValidationError(err);
+  });
+  await AboutmeController.update(data, req, res);
+});
 
 router.get('/experience', ExperienceController.edit);
 

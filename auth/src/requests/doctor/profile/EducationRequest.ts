@@ -4,16 +4,16 @@ const create = Joi.object({
   school: Joi.array()
     .items(
       Joi.object({
-        lang: Joi.string(),
-        value: Joi.string(),
+        lang: Joi.string().required(),
+        value: Joi.string().required(),
       })
     )
     .required(),
   degree: Joi.array()
     .items(
       Joi.object({
-        lang: Joi.string(),
-        value: Joi.string(),
+        lang: Joi.string().required(),
+        value: Joi.string().required(),
       })
     )
     .required(),

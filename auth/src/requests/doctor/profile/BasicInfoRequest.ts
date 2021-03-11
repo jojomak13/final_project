@@ -4,8 +4,8 @@ import { Gender } from '../../../models/enums/gender';
 const BasicInfoRequest = Joi.object({
     name: Joi.array().items(
         Joi.object({
-            lang: Joi.string(),
-            value: Joi.string(),
+            lang: Joi.string().required(),
+            value: Joi.string().required(),
         })
     ),
 
@@ -30,8 +30,8 @@ const BasicInfoRequest = Joi.object({
     country: Joi.string().required(),
 
     job: Joi.object({
-        lang: Joi.string(),
-        value: Joi.string()
+        lang: Joi.string().required(),
+        value: Joi.string().required()
     })
 }).with('password', 'repeat_password');
 
