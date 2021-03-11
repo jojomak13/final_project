@@ -10,7 +10,7 @@ export const experienceSchema = new Schema({
     ],
     required: true,
   },
-  title_en: {
+  title: {
     type: [
       {
         lang: String,
