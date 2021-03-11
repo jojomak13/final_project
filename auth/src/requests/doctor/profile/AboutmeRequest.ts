@@ -7,18 +7,21 @@ const AboutmeRequest = Joi.object({
             value: Joi.string()
         })
     ),
+
     biography: Joi.array().items(
         Joi.object({
             lang: Joi.string(),
             value: Joi.string()
         })
     ),
+
     prefix: Joi.array().items(
         Joi.object({
             lang: Joi.string(),
             value: Joi.string()
         })
     ),
+
     languages: Joi.array().items(
         Joi.object({
             lang: Joi.string(),
@@ -26,6 +29,12 @@ const AboutmeRequest = Joi.object({
         })
     ),
 
+    specialization: Joi.array().items(
+        Joi.object({
+            lang: Joi.string(),
+            value: Joi.string()
+        })
+    ),
 });
 
 export { AboutmeRequest };
