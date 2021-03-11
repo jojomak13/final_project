@@ -5,18 +5,15 @@ import { UpdateProfileRequest } from '../../requests/patient/UpdateProfileReques
 
 const router = Router();
 
-router.get('/', async (req, res) => {
-  res.json('welcome from profile');
-});
+router.get('/', profileController.edit);
 
 router.patch('/', async (req: Request, res: Response) => {
   const data = await UpdateProfileRequest.validateAsync(req.body, {
     abortEarly: false,
     stripUnknown: true,
-  })
-    .catch((err) => {
-      throw new RequestValidationError(err);
-    });
+  }).catch((err) => {
+    throw new RequestValidationError(err);
+  });
   await profileController.update(data, req, res);
 });
 

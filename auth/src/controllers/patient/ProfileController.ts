@@ -3,6 +3,16 @@ import { Request, Response } from 'express';
 import { Password } from '../../helpers/password';
 import { Patient } from '../../models/Patient';
 
+export const edit = async (req: Request, res: Response) => {
+  const patient = await Patient.findById(req.user?.id).populate('country');
+
+  if (!patient) {
+    throw new BadRequestError('oops, somthing went wrong');
+  }
+
+  res.json({ status: true, data: patient });
+};
+
 export const update = async (data: any, req: Request, res: Response) => {
   const patient = await Patient.findById(req.user?.id);
 
