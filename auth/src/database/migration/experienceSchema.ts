@@ -1,20 +1,22 @@
 import { Schema } from 'mongoose';
 
 export const experienceSchema = new Schema({
-  name_en: {
-    type: String,
-    required: true,
-  },
-  name_ar: {
-    type: String,
+  name: {
+    type: [
+      {
+        lang: String,
+        value: String,
+      },
+    ],
     required: true,
   },
   title_en: {
-    type: String,
-    required: true,
-  },
-  title_ar: {
-    type: String,
+    type: [
+      {
+        lang: String,
+        value: String,
+      },
+    ],
     required: true,
   },
   from: {

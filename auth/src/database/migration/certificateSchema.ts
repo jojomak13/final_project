@@ -1,20 +1,22 @@
 import { Schema } from 'mongoose';
 
 export const certificateSchema = new Schema({
-  organization_en: {
-    type: String,
+  organization: {
+    type: [
+      {
+        lang: String,
+        value: String,
+      },
+    ],
     required: true,
   },
-  organization_ar: {
-    type: String,
-    required: true,
-  },
-  title_en: {
-    type: String,
-    required: true,
-  },
-  title_ar: {
-    type: String,
+  title: {
+    type: [
+      {
+        lang: String,
+        value: String,
+      },
+    ],
     required: true,
   },
   from: {
@@ -29,9 +31,5 @@ export const certificateSchema = new Schema({
   },
   licensing_number: {
     type: String,
-  },
-  doctor: {
-    type: String,
-    required: true,
   },
 });

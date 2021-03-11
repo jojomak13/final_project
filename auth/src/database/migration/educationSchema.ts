@@ -1,20 +1,22 @@
 import { Schema } from 'mongoose';
 
 export const educationSchema = new Schema({
-  school_en: {
-    type: String,
+  school: {
+    type: [
+      {
+        lang: String,
+        value: String,
+      },
+    ],
     required: true,
   },
-  school_ar: {
-    type: String,
-    required: true,
-  },
-  degree_en: {
-    type: String,
-    required: true,
-  },
-  degree_ar: {
-    type: String,
+  degree: {
+    type: [
+      {
+        lang: String,
+        value: String,
+      },
+    ],
     required: true,
   },
   from: {
@@ -23,9 +25,5 @@ export const educationSchema = new Schema({
   },
   to: {
     type: String,
-  },
-  doctor: {
-    type: String,
-    required: true,
   },
 });
