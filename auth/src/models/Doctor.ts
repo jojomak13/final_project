@@ -8,6 +8,7 @@ import { Prefix } from './enums/prefix';
 import { JobDocument } from './Job';
 import { LanguageDocument } from './Language';
 import { SpecializationDocument } from './Specialization';
+import { ILocaleColumn } from './types/ILocaleColumn';
 
 interface IFees {
   usd: {
@@ -25,10 +26,8 @@ interface SessionFees {
 }
 
 interface DoctorAttrs {
-  name_en: string;
-  name_ar: string;
-  title_en: string;
-  title_ar: string;
+  name: ILocaleColumn[];
+  title: ILocaleColumn[];
   email: string;
   phone: string;
   gender: Gender;
@@ -38,8 +37,7 @@ interface DoctorAttrs {
   country: CountryDocument;
   approved: boolean;
   prefix: Prefix;
-  biography_en: string;
-  biography_ar: string;
+  biography: ILocaleColumn[];
   job: JobDocument;
   fees: SessionFees;
   languages: Array<LanguageDocument>;
@@ -52,10 +50,8 @@ interface DoctorAttrs {
 
 interface DoctorDocument extends mongoose.Document {
   id: string;
-  name_en: string;
-  name_ar: string;
-  title_en: string;
-  title_ar: string;
+  name: ILocaleColumn[];
+  title: ILocaleColumn[];
   email: string;
   phone: string;
   gender: Gender;
@@ -65,8 +61,7 @@ interface DoctorDocument extends mongoose.Document {
   country: CountryDocument;
   approved: boolean;
   prefix: Prefix;
-  biography_en: string;
-  biography_ar: string;
+  biography: ILocaleColumn[];
   job: JobDocument;
   fees: SessionFees;
   new_fees?: SessionFees;
@@ -84,20 +79,22 @@ interface DoctorModel extends mongoose.Model<DoctorDocument> {
 }
 
 const DoctorSchema = new mongoose.Schema({
-  name_en: {
-    type: String,
+  name: {
+    type: [
+      {
+        lang: String,
+        value: String,
+      },
+    ],
     required: true,
   },
-  name_ar: {
-    type: String,
-    required: true,
-  },
-  title_en: {
-    type: String,
-    required: true,
-  },
-  title_ar: {
-    type: String,
+  title: {
+    type: [
+      {
+        lang: String,
+        value: String,
+      },
+    ],
     required: true,
   },
   email: {
@@ -140,12 +137,13 @@ const DoctorSchema = new mongoose.Schema({
     enum: Prefix,
     required: true,
   },
-  biography_en: {
-    type: String,
-    required: true,
-  },
-  biography_ar: {
-    type: String,
+  biography: {
+    type: [
+      {
+        lang: String,
+        value: String,
+      },
+    ],
     required: true,
   },
   job: {
