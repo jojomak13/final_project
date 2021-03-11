@@ -2,7 +2,12 @@ import Joi from 'joi';
 import { Gender } from '../../models/enums/gender';
 
 const UpdateProfileRequest = Joi.object({
-  name: Joi.string().min(3).max(255).required(),
+  name: Joi.array().items(
+    Joi.object({
+      lang: Joi.string(),
+      value: Joi.string(),
+    })
+  ),
 
   password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{6,30}$')),
 

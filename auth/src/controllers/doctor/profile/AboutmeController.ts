@@ -8,6 +8,8 @@ export const edit = async (req: Request, res: Response) => {
     'biography',
     'prefix',
     'languages',
+    'specializations',
+    'main_focus',
   ]);
 
   if (!AboutDoctor) {
