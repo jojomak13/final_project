@@ -2,7 +2,6 @@ import jwt from 'jsonwebtoken';
 
 class Auth {
   public static async login(user: any) {
-    console.log(process.env.TOKEN_EXPIRE_PERIOD);
     const token = await jwt.sign(
       {
         id: user.id,
