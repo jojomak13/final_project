@@ -79,118 +79,129 @@ interface DoctorModel extends mongoose.Model<DoctorDocument> {
   build(atters: DoctorAttrs): DoctorDocument;
 }
 
-const DoctorSchema = new mongoose.Schema({
-  name: {
-    type: [
-      {
-        lang: String,
-        value: String,
+const DoctorSchema = new mongoose.Schema(
+  {
+    name: {
+      type: [
+        {
+          lang: String,
+          value: String,
+        },
+      ],
+      required: true,
+    },
+    title: {
+      type: [
+        {
+          lang: String,
+          value: String,
+        },
+      ],
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    phone: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    gender: {
+      type: String,
+      enum: Gender,
+      required: true,
+    },
+    date_of_birth: {
+      type: Schema.Types.Date,
+      required: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    image: {
+      type: String,
+    },
+    country: {
+      type: Schema.Types.ObjectId,
+      ref: 'Country',
+      required: true,
+    },
+    approved: {
+      type: Boolean,
+      default: false,
+    },
+    prefix: {
+      type: String,
+      enum: Prefix,
+    },
+    biography: {
+      type: [
+        {
+          lang: String,
+          value: String,
+        },
+      ],
+    },
+    job: {
+      type: Schema.Types.ObjectId,
+      ref: 'Job',
+    },
+    fees: {
+      type: Object,
+    },
+    new_fees: {
+      type: Object,
+    },
+    fees_updated_at: {
+      type: Schema.Types.Date,
+    },
+    languages: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: 'Language',
+        },
+      ],
+    },
+    specializations: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: 'Specialization',
+        },
+      ],
+    },
+    main_focus: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: 'Specialization',
+        },
+      ],
+    },
+    experiences: {
+      type: [experienceSchema],
+    },
+    certificates: {
+      type: [certificateSchema],
+    },
+    educations: {
+      type: [educationSchema],
+    },
+  },
+  {
+    toJSON: {
+      transform(_doc, ret) {
+        ret.id = ret._id;
+        delete ret._id;
+        delete ret.password;
       },
-    ],
-    required: true,
-  },
-  title: {
-    type: [
-      {
-        lang: String,
-        value: String,
-      },
-    ],
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  phone: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  gender: {
-    type: String,
-    enum: Gender,
-    required: true,
-  },
-  date_of_birth: {
-    type: Schema.Types.Date,
-    required: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  image: {
-    type: String,
-  },
-  country: {
-    type: Schema.Types.ObjectId,
-    ref: 'Country',
-    required: true,
-  },
-  approved: {
-    type: Boolean,
-    default: false,
-  },
-  prefix: {
-    type: String,
-    enum: Prefix,
-  },
-  biography: {
-    type: [
-      {
-        lang: String,
-        value: String,
-      },
-    ],
-  },
-  job: {
-    type: Schema.Types.ObjectId,
-    ref: 'Job',
-  },
-  fees: {
-    type: Object,
-  },
-  new_fees: {
-    type: Object,
-  },
-  fees_updated_at: {
-    type: Schema.Types.Date,
-  },
-  languages: {
-    type: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Language',
-      },
-    ],
-  },
-  specializations: {
-    type: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Specialization',
-      },
-    ],
-  },
-  main_focus: {
-    type: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Specialization',
-      },
-    ],
-  },
-  experiences: {
-    type: [experienceSchema],
-  },
-  certificates: {
-    type: [certificateSchema],
-  },
-  educations: {
-    type: [educationSchema],
-  },
-});
+    },
+  }
+);
 
 DoctorSchema.set('versionKey', 'version');
 
