@@ -1,7 +1,7 @@
 import { RequestValidationError } from '@hti/common';
 import { Router, Request, Response } from 'express';
-import { SignupRequest } from '../../requests/doctor/signupRequest';
-import * as AuthController from '../../controllers/doctor/AuthController'
+import { SignupRequest } from '../../requests/doctor/SignupRequest';
+import * as AuthController from '../../controllers/doctor/AuthController';
 
 const router = Router();
 

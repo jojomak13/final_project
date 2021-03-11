@@ -33,13 +33,13 @@ export const signup = async (data: any, req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
-  const patient = await Patient.findOne({ email }).populate('country');
+  const doctor = await Doctor.findOne({ email }).populate('country');
 
-  if (!patient || !(await Password.compare(password, patient.password))) {
+  if (!doctor || !(await Password.compare(password, doctor.password))) {
     throw new BadRequestError('Invalid Credentials');
   }
 
-  const token = await Auth.login(patient);
+  const token = await Auth.login(doctor);
 
   res.json({ status: true, data: { token } });
 };
