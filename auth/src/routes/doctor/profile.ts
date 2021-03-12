@@ -8,6 +8,8 @@ import CertificateRequest from '../../requests/doctor/profile/CertificateRequest
 import EducationRequest from '../../requests/doctor/profile/EducationRequest';
 import { BasicInfoRequest } from '../../requests/doctor/profile/BasicInfoRequest';
 import { AboutmeRequest } from '../../requests/doctor/profile/AboutmeRequest';
+import * as SessionFeesController from '../../controllers/doctor/profile/SessionFeesController';
+import { SessionFeesRequest } from '../../requests/doctor/profile/FeesRequest';
 
 const router = Router();
 
@@ -116,6 +118,18 @@ router.delete('/education', async (req: Request, res: Response) => {
     });
 
   await ExperienceController.educationDelete(req, res);
+});
+
+//Fees
+router.get('/fees', SessionFeesController.edit);
+router.patch('/fees', async (req: Request, res: Response) => {
+  const data = await SessionFeesRequest.validateAsync(req.body, {
+    abortEarly: false,
+    stripUnknown: true,
+  }).catch((err) => {
+    throw new RequestValidationError(err);
+  });
+  await SessionFeesController.update(data, req, res);
 });
 
 export { router as ProfileRouter };

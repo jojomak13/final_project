@@ -68,7 +68,7 @@ interface DoctorDocument extends mongoose.Document {
   job: JobDocument;
   fees: SessionFees;
   new_fees?: SessionFees;
-  fees_updated_at?: Date;
+  fees_updated_at: Date;
   languages: Array<LanguageDocument>;
   specializations: Array<SpecializationDocument>;
   main_focus: Array<SpecializationDocument>;
@@ -160,6 +160,8 @@ const DoctorSchema = new mongoose.Schema(
     },
     fees_updated_at: {
       type: Schema.Types.Date,
+      default: new Date(1970).toISOString(),
+      required: true,
     },
     languages: {
       type: [

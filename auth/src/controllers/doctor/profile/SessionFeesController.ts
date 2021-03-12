@@ -13,13 +13,28 @@ export const edit = async (req: Request, res: Response) => {
 };
 
 export const update = async (data: any, req: Request, res: Response) => {
-  const fees = await Doctor.findById(req.user?.id);
+  const doctor = await Doctor.findById(req.user?.id);
 
-  if (!fees) {
+  if (!doctor) {
     throw new BadRequestError('oops, somthing went wrong');
   }
 
-  await Doctor.updateOne(data);
+  const timeDif =
+    Math.abs(new Date().getTime() - doctor.fees_updated_at.getTime()) /
+    (1000 * 60 * 60 * 24 * 365);
 
-  res.json({ status: true, msg: 'about me updated successfully' });
+  if (timeDif >= 1.0) {
+    doctor.set('new_fees', data);
+    doctor.set('fees_updated_at', new Date().toISOString());
+    await doctor.save();
+    return res.json({
+      status: true,
+      msg: 'updated fees going to reviewed by admins',
+    });
+  }
+
+  return res.status(400).json({
+    status: false,
+    msg: 'oops, you can updete your fess once per year',
+  });
 };
