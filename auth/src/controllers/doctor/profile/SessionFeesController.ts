@@ -20,10 +20,9 @@ export const update = async (data: any, req: Request, res: Response) => {
   }
 
   const timeDif =
-    Math.abs(new Date().getTime() - doctor.fees_updated_at.getTime()) /
-    (1000 * 60 * 60 * 24 * 365);
+    new Date().getFullYear() - doctor.fees_updated_at.getFullYear();
 
-  if (timeDif >= 1.0) {
+  if (timeDif >= 1) {
     doctor.set('new_fees', data);
     doctor.set('fees_updated_at', new Date().toISOString());
     await doctor.save();
