@@ -1,7 +1,9 @@
+import { AuthTypes } from '@hti/common';
 import mongoose, { Schema } from 'mongoose';
 import { certificateSchema } from '../database/migration/certificateSchema';
 import { educationSchema } from '../database/migration/educationSchema';
 import { experienceSchema } from '../database/migration/experienceSchema';
+import { Auth } from '../helpers/Auth';
 import { Password } from '../helpers/password';
 import { CountryDocument } from './Country';
 import { Gender } from './enums/gender';
@@ -73,6 +75,7 @@ interface DoctorDocument extends mongoose.Document {
   experiences: Array<any>;
   certificates: Array<any>;
   educations: Array<any>;
+  login(guard?: AuthTypes): string;
 }
 
 interface DoctorModel extends mongoose.Model<DoctorDocument> {
@@ -207,6 +210,10 @@ DoctorSchema.set('versionKey', 'version');
 
 DoctorSchema.statics.build = (atters: DoctorAttrs) => {
   return new Doctor(atters);
+};
+
+DoctorSchema.methods.login = async function (guard: AuthTypes) {
+  return await Auth.login(this, guard || AuthTypes.DOCTOR);
 };
 
 DoctorSchema.pre('save', async function (done) {

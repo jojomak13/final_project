@@ -1,4 +1,4 @@
-import { auth, RequestValidationError } from '@hti/common';
+import { doctor, RequestValidationError } from '@hti/common';
 import { Router, Request, Response } from 'express';
 import { SignupRequest } from '../../requests/doctor/SignupRequest';
 import * as AuthController from '../../controllers/doctor/AuthController';
@@ -28,6 +28,6 @@ router.post('/register', async (req: Request, res: Response) => {
   await AuthController.signup(data, req, res);
 });
 
-router.get('/me', auth, AuthController.me);
+router.get('/me', doctor, AuthController.me);
 
 export { router as authRouter };

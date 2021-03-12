@@ -1,6 +1,5 @@
 import { BadRequestError, DBValidationError } from '@hti/common';
 import { Request, Response } from 'express';
-import { Auth } from '../../helpers/Auth';
 import { Password } from '../../helpers/password';
 import { Doctor } from '../../models/Doctor';
 
@@ -39,7 +38,7 @@ export const login = async (req: Request, res: Response) => {
     throw new BadRequestError('Invalid Credentials');
   }
 
-  const token = await Auth.login(doctor);
+  const token = await doctor.login();
 
   res.json({ status: true, data: { token } });
 };
