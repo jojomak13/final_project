@@ -1,9 +1,19 @@
 import { AuthTypes } from '@hti/common';
 import jwt from 'jsonwebtoken';
 
+export interface loginPayload {
+  token: string;
+  refreshToken: string;
+}
+
+export interface refreshTokenPayload {
+  id: string;
+  email: string;
+}
+
 class Auth {
-  public static async login(user: any, guard: AuthTypes) {
-    const token = await jwt.sign(
+  public static login(user: any, guard: AuthTypes): loginPayload {
+    const token = jwt.sign(
       {
         id: user.id,
         name: user.name,
@@ -17,11 +27,22 @@ class Auth {
       },
       process.env.APP_KEY!,
       {
-        expiresIn: parseInt(process.env.TOKEN_EXPIRE_PERIOD!),
+        expiresIn: process.env.TOKEN_EXPIRE_PERIOD!,
       }
     );
 
-    return token;
+    const refreshToken = jwt.sign(
+      {
+        id: user.id,
+        email: user.email,
+      },
+      process.env.APP_KEY!,
+      {
+        expiresIn: process.env.REFRESH_TOKEN_EXPIRE_PERIOD!,
+      }
+    );
+
+    return { token, refreshToken };
   }
 }
 

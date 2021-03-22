@@ -1,6 +1,6 @@
 import { AuthTypes } from '@hti/common';
 import mongoose, { Schema, model } from 'mongoose';
-import { Auth } from '../helpers/Auth';
+import { Auth, loginPayload } from '../helpers/Auth';
 import { Password } from '../helpers/password';
 import { Country } from './Country';
 import { CountryDocument } from './Country';
@@ -27,7 +27,7 @@ interface PatientDocument extends mongoose.Document {
   password: string;
   image?: string;
   country: CountryDocument;
-  login(guard?: AuthTypes): string;
+  login(guard?: AuthTypes): loginPayload;
 }
 
 interface PatientModel extends mongoose.Model<PatientDocument> {
@@ -90,8 +90,8 @@ PatientSchema.statics.build = (atters: Patientatters) => {
   return new Patient(atters);
 };
 
-PatientSchema.methods.login = async function (guard: AuthTypes) {
-  return await Auth.login(this, guard || AuthTypes.PATIENT);
+PatientSchema.methods.login = function (guard: AuthTypes): loginPayload {
+  return Auth.login(this, guard || AuthTypes.PATIENT);
 };
 
 PatientSchema.pre('save', async function (done) {

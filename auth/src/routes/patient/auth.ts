@@ -30,4 +30,6 @@ router.post('/login', async (req: Request, res: Response) => {
 
 router.get('/me', patient, AuthController.me);
 
+router.post('/refresh-token', AuthController.refreshToken);
+
 export { router as AuthRouter };

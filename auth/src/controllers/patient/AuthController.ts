@@ -1,5 +1,7 @@
+import { refreshTokenPayload } from '@helpers/Auth';
 import { BadRequestError, DBValidationError } from '@hti/common';
 import { Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
 import { Password } from '../../helpers/password';
 import { Patient } from '../../models/Patient';
 
@@ -38,9 +40,7 @@ export const login = async (req: Request, res: Response) => {
     throw new BadRequestError('Invalid Credentials');
   }
 
-  const token = await patient.login();
-
-  res.json({ status: true, data: { token } });
+  res.json({ status: true, data: patient.login() });
 };
 
 export const me = async (req: Request, res: Response) => {
@@ -48,4 +48,25 @@ export const me = async (req: Request, res: Response) => {
     status: true,
     data: req.user,
   });
+};
+
+export const refreshToken = async (req: Request, res: Response) => {
+  const { refresh_token } = req.body;
+
+  try {
+    const payload = jwt.verify(
+      refresh_token,
+      process.env.APP_KEY!
+    ) as refreshTokenPayload;
+
+    const patient = await Patient.findById(payload.id).populate('country');
+
+    if (!patient || patient.email !== payload.email) {
+      throw new BadRequestError('Not Authorized', 401);
+    }
+
+    res.json({ status: true, data: patient.login() });
+  } catch (err) {
+    throw new BadRequestError('Invalid or Expired Refresh Token', 400);
+  }
 };

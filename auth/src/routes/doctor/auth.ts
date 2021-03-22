@@ -30,4 +30,6 @@ router.post('/register', async (req: Request, res: Response) => {
 
 router.get('/me', doctor, AuthController.me);
 
+router.post('/refresh-token', AuthController.refreshToken);
+
 export { router as authRouter };
