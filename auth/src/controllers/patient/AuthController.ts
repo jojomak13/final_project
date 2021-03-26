@@ -1,4 +1,4 @@
-import { refreshTokenPayload } from '@helpers/Auth';
+import { refreshTokenPayload } from '../../helpers/Auth';
 import { BadRequestError, DBValidationError } from '@hti/common';
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
