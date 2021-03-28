@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: timeslot-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: timeslot
+  template:
+    metadata:
+      labels:
+        app: timeslot
+    spec:
+      containers:
+        - name: timeslot
+          image: jojomak/timeslot
+          env:
+            - name: TOKEN_EXPIRE_PERIOD
+              value: '15m'
+            - name: REFRESH_TOKEN_EXPIRE_PERIOD
+              value: '7d'
+            - name: DB_URI
+              value: 'mongodb://timeslot-mongo-service:27017/timeslot'
+            - name: APP_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-key
+                  key: APP_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: timeslot-service
+spec:
+  type: ClusterIP
+  selector:
+    app: timeslot
+  ports:
+    - name: timeslot
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
