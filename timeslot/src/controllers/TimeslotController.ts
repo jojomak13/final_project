@@ -32,4 +32,6 @@ export const store = (req: Request, res: Response) => {
   // TODO:: check if no overlap
 };
 
-export const destroy = (req: Request, res: Response) => {};
+export const destroy = (req: Request, res: Response) => {
+  // check if orderId is null
+};
