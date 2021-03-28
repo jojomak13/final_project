@@ -1,4 +1,4 @@
-import mongoose, { Types } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import { Duration } from './enums/DurationEnum';
 
 interface TimeslotAttrs {
@@ -22,26 +22,26 @@ interface TimeslotModel extends mongoose.Model<TimeslotDocument> {
   build(atters: TimeslotAttrs): TimeslotDocument;
 }
 
-const TimeslotSchema = new mongoose.Schema({
+const TimeslotSchema = new Schema({
   duration: {
     type: String,
     enum: Object.values(Duration),
     required: true,
   },
   start_time: {
-    type: Date,
+    type: Schema.Types.Date,
     required: true,
   },
   end_time: {
-    type: Date,
+    type: Schema.Types.Date,
     required: true,
   },
   doctor_id: {
-    type: Types.ObjectId,
+    type: Schema.Types.ObjectId,
     required: true,
   },
   order_id: {
-    type: Types.ObjectId,
+    type: Schema.Types.ObjectId,
   },
 });
 

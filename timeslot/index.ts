@@ -22,7 +22,7 @@ const setup = async () => {
 
     const port = process.env.PORT || 8080;
     app.listen(port, () => {
-      console.log(`[Auth] service running on port ${port}`);
+      console.log(`[Timeslot] service running on port ${port}`);
     });
   } catch (err) {
     console.log(err.message);

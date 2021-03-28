@@ -1,8 +1,7 @@
 import { Router } from 'express';
+import { timeslotRouter } from './timeslot';
 
 const router = Router();
-router.get('/', (req, res) => {
-  res.json('welcome');
-});
+router.use('/timeslot', timeslotRouter);
 
 export { router };
