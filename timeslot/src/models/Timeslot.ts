@@ -34,7 +34,7 @@ const TimeslotSchema = new Schema({
   },
   end_time: {
     type: Schema.Types.Date,
-    required: true,
+    // required: true,
   },
   doctor_id: {
     type: Schema.Types.ObjectId,
