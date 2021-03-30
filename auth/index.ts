@@ -11,8 +11,7 @@ const setup = async () => {
       }
     });
 
-    // @ts-ignore
-    await mongoose.connect(process.env.DB_URI, {
+    await mongoose.connect(process.env.DB_URI!, {
       autoIndex: true,
       useNewUrlParser: true,
       useUnifiedTopology: true,

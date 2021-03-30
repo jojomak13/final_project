@@ -1,0 +1,24 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-service
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/use-regex: 'true'
+spec:
+  rules:
+    - host: project.test
+      http:
+        paths:
+          - path: /api/doctor/?(.*)
+            backend:
+              serviceName: auth-service
+              servicePort: 3000
+          - path: /api/patient/?(.*)
+            backend:
+              serviceName: auth-service
+              servicePort: 3000
+          - path: /api/timeslot/?(.*)
+            backend:
+              serviceName: timeslot-service
+              servicePort: 3000

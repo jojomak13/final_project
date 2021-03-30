@@ -45,6 +45,8 @@ const TimeslotSchema = new Schema({
   },
 });
 
+TimeslotSchema.set('versionKey', 'version');
+
 TimeslotSchema.statics.build = (atters: TimeslotAttrs) => {
   return new Timeslot(atters);
 };

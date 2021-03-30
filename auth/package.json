@@ -29,10 +29,12 @@
     "typescript": "^4.2.3"
   },
   "dependencies": {
-    "@hti/common": "^1.0.3",
+    "@hti/common": "^1.0.4",
+    "@types/faker": "^5.1.7",
     "bcrypt": "^5.0.1",
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",
+    "faker": "^5.5.1",
     "joi": "^17.4.0",
     "mongoose": "^5.11.19"
   }

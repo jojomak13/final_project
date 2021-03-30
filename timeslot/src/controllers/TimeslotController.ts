@@ -1,6 +1,7 @@
-import { BadRequestError, NotFoundError, RequestValidationError } from '@hti/common';
+import { BadRequestError, NotFoundError } from '@hti/common';
 import { Request, Response } from 'express';
 import { Timeslot } from '../models/Timeslot';
+import { TimeslotService } from '../services/TimeslotService';
 
 export const show = async (req: Request, res: Response) => {
   const doctorId: any = req.query.doctorId;
@@ -17,39 +18,47 @@ export const show = async (req: Request, res: Response) => {
   });
 };
 
-export const store = async (req: Request, res: Response) => {
-  /**
-   * [Types of timeslots]
-   * {single} timeslot
-   * {group} timeslot
-   */
-  // TODO:: check if no overlap
-  const {start_day, is_bulk} = req.body;
-  const timeSlot = await Timeslot.findOne({ start_day: start_day });
+export const store = async (data: any, req: Request, res: Response) => {
+  const { start_day, start_time, duration, is_bulk } = req.body;
+
+  const timeslotService = new TimeslotService(
+    start_day,
+    start_time,
+    duration,
+    req.user!.id
+  );
+
+  console.log(await timeslotService.save());
 
   // single time slot condition
-  if (!is_bulk) {
-    if (timeSlot) {
-      throw new BadRequestError('Time slot already exist');
-    }else{
-      const newTimeSlot =  Timeslot.build(req.body);
-      await newTimeSlot.save();
-      return res.status(201).json({
-        status: true,
-        msg: 'Time slot created successfully',
-      });
-    }
-  }else{
-
-  }
+  // if (!is_bulk) {
+  //   if (timeSlot) {
+  //     throw new BadRequestError('Time slot already exist');
+  //   } else {
+  //     const newTimeSlot = Timeslot.build(req.body);
+  //     await newTimeSlot.save();
+  //     return res.status(201).json({
+  //       status: true,
+  //       msg: 'Time slot created successfully',
+  //     });
+  //   }
+  // } else {
+  // }
 };
 
 export const destroy = async (req: Request, res: Response) => {
-  // check if orderId is null
   const timeSlot = await Timeslot.findById(req.params.id);
-  if(!timeSlot || timeSlot.order_id){
+
+  if (!timeSlot) throw new NotFoundError();
+
+  if (timeSlot.order_id || timeSlot.doctor_id !== req.user!.id) {
     throw new BadRequestError('Not Allowed to remove this time slot');
-  }else {
-    await timeSlot.remove();
   }
+
+  await timeSlot.remove();
+
+  return res.json({
+    status: true,
+    msg: 'timeslot deleted success',
+  });
 };

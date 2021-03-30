@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(currentUser);
 
 // load routes
-app.use(router);
+app.use('/api', router);
 
 //  NotFound Handler
 app.use(() => {
