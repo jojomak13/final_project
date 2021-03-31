@@ -18,6 +18,6 @@ router.post('/', doctor, async (req: Request, res: Response) => {
   await TimeslotController.store(data, req, res);
 });
 
-router.delete('/{id}', doctor, TimeslotController.destroy);
+router.delete('/:id', doctor, TimeslotController.destroy);
 
 export { router as timeslotRouter };

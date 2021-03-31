@@ -4,6 +4,7 @@ import moment from 'moment';
 class TimeslotService {
   private timeSlot: any;
   private startTime: any;
+  private isFailed: boolean = false;
 
   /**
    * TimeslotService constructor.
@@ -18,7 +19,7 @@ class TimeslotService {
     private duration: any,
     private userId: string
   ) {
-    this.startTime = moment.unix(startTime).utc().format('HH:mm:ss');
+    this.startTime = moment(parseInt(startTime)).format('HH:mm:ss');
   }
 
   private handleTimeSlot() {
@@ -27,8 +28,7 @@ class TimeslotService {
     // Configure New Time Slot Data
     const timeSlot = {
       start_time: moment(sessionStartTime).toISOString(),
-      end_time: moment
-        .utc(sessionStartTime)
+      end_time: moment(sessionStartTime)
         .add(this.duration, 'minutes')
         .toISOString(),
       duration: this.duration,
@@ -41,8 +41,8 @@ class TimeslotService {
   private async currentDay() {
     const timeslots = await Timeslot.find({
       start_time: {
-        $gte: moment.utc(this.startDay).toDate(),
-        $lte: moment.utc(this.startDay).endOf('day').toDate(),
+        $gte: moment(this.startDay).toDate(),
+        $lte: moment(this.startDay).endOf('day').toDate(),
       },
       doctor_id: this.userId,
     });
@@ -58,10 +58,9 @@ class TimeslotService {
   private isOverLapped(items: any): boolean {
     const newItem = this.timeSlot;
 
-    items.forEach((item: any) => {
-      console.log(item);
-      const startTime = moment.utc(item.start_time);
-      const endTime = moment.utc(item.end_time);
+    for (let i = 0; i < items.length; i++) {
+      const startTime = moment(items[i].start_time);
+      const endTime = moment(items[i].end_time);
 
       if (
         startTime.isAfter(newItem.start_time) &&
@@ -90,7 +89,7 @@ class TimeslotService {
       ) {
         return true;
       }
-    });
+    }
 
     return false;
   }
@@ -109,25 +108,33 @@ class TimeslotService {
 
   public async save() {
     const day = await this.currentDay();
+
     this.handleTimeSlot();
 
-    if (this.isOverLapped(day)) return false;
+    if (this.isOverLapped(day)) {
+      this.isFailed = true;
+      return false;
+    }
 
     await this.store();
 
     return true;
   }
 
-  // public function createBulk(endDay)
-  // {
-  //     startDay = Carbon::parse(this->startDay);
-  //     endDay = Carbon::parse(endDay);
+  public async createBulk(date: any) {
+    const day = moment(this.startDay);
+    const endDay = moment(date);
 
-  //     startDay->diffInDaysFiltered(function(Carbon date) {
-  //         this->startDay = date->toDateString();
-  //         this->save();
-  //     }, endDay->addDay());
-  // }
+    for (; day.diff(endDay) <= 0; day.add(1, 'day')) {
+      this.startDay = day.format('YYYY-MM-DD');
+
+      await this.save();
+    }
+  }
+
+  public fails(): boolean {
+    return this.isFailed;
+  }
 }
 
 export { TimeslotService };

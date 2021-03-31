@@ -52,7 +52,7 @@ TimeslotSchema.statics.build = (atters: TimeslotAttrs) => {
 };
 
 const Timeslot = mongoose.model<TimeslotDocument, TimeslotModel>(
-  'Timslot',
+  'Timeslot',
   TimeslotSchema
 );
 
