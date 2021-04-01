@@ -37,8 +37,9 @@ export const store = async (data: any, req: Request, res: Response) => {
   return res.status(201).json({
     status: !timeslotService.fails(),
     msg: timeslotService.fails()
-      ? 'Timeslot[s] already exists'
+      ? `${timeslotService.failedSolts().length} Timeslot[s] is already exsist!`
       : 'Time slot created successfully',
+    body: timeslotService.failedSolts()
   });
 };
 

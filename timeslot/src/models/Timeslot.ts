@@ -43,6 +43,13 @@ const TimeslotSchema = new Schema({
   order_id: {
     type: Schema.Types.ObjectId,
   },
+},{
+  toJSON: {
+    transform(_doc, ret) {
+      ret.id = ret._id;
+      delete ret._id;
+    },
+  },
 });
 
 TimeslotSchema.set('versionKey', 'version');
