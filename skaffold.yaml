@@ -24,3 +24,11 @@ build:
         manual:
           - src: 'src/**/*.ts'
             dest: .
+    - image: jojomak/order
+      context: order
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'src/**/*.ts'
+            dest: .
