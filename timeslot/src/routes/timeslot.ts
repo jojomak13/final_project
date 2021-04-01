@@ -8,14 +8,14 @@ const router = Router();
 router.get('/', TimeslotController.show);
 
 router.post('/', doctor, async (req: Request, res: Response) => {
-  const data = await CreateTimeslotRequest.validateAsync(req.body, {
+  await CreateTimeslotRequest.validateAsync(req.body, {
     abortEarly: false,
     stripUnknown: true,
   }).catch((err) => {
     throw new RequestValidationError(err);
   });
 
-  await TimeslotController.store(data, req, res);
+  await TimeslotController.store(req, res);
 });
 
 router.delete('/:id', doctor, TimeslotController.destroy);

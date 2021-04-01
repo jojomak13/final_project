@@ -4,8 +4,7 @@ import moment from 'moment';
 class TimeslotService {
   private timeSlot: any;
   private startTime: any;
-  private isFailed: boolean = false;
-  private faildSlots : Array<TimeslotDocument> = [];
+  private faildSlots: Array<TimeslotDocument> = [];
 
   /**
    * TimeslotService constructor.
@@ -62,35 +61,37 @@ class TimeslotService {
     for (let i = 0; i < items.length; i++) {
       const startTime = moment(items[i].start_time);
       const endTime = moment(items[i].end_time);
+      let isFaild = false;
 
       if (
         startTime.isAfter(newItem.start_time) &&
         startTime.isBefore(newItem.end_time)
       ) {
-        this.faildSlots.push(newItem);
-        return true;
+        isFaild = true;
       }
 
       if (
         endTime.isAfter(newItem.start_time) &&
         endTime.isBefore(newItem.end_time)
       ) {
-        this.faildSlots.push(newItem);
-        return true;
+        isFaild = true;
       }
 
       if (
         startTime.isSameOrBefore(newItem.start_time) &&
         endTime.isSameOrAfter(newItem.end_time)
       ) {
-        this.faildSlots.push(newItem);
-        return true;
+        isFaild = true;
       }
 
       if (
         startTime.isSameOrAfter(newItem.start_time) &&
         endTime.isSameOrBefore(newItem.end_time)
       ) {
+        isFaild = true;
+      }
+
+      if (isFaild) {
         this.faildSlots.push(newItem);
         return true;
       }
@@ -117,7 +118,6 @@ class TimeslotService {
     this.handleTimeSlot();
 
     if (this.isOverLapped(day)) {
-      this.isFailed = true;
       return false;
     }
 
@@ -133,22 +133,19 @@ class TimeslotService {
     for (; day.diff(endDay) <= 0; day.add(1, 'day')) {
       this.startDay = day.format('YYYY-MM-DD');
 
-      await this.save(); 
+      await this.save();
     }
   }
 
   public fails(): boolean {
-    return this.isFailed;
+    return !!this.faildSlots.length;
   }
 
-  public failedSolts (): any {
-    let faild: String = "";
-    // for(let slot = 0; slot < this.faildSlots.length; slot++){
-    //   // console.log(this.faildSlots[slot]);
-    //   faild.concat(this.faildSlots);
-    // }
-    return this.faildSlots;
-  } 
+  public failedSolts(): any {
+    return this.faildSlots.map(({ start_time, end_time, duration }) => {
+      return { start_time, end_time, duration };
+    });
+  }
 }
 
 export { TimeslotService };

@@ -18,7 +18,7 @@ export const show = async (req: Request, res: Response) => {
   });
 };
 
-export const store = async (data: any, req: Request, res: Response) => {
+export const store = async (req: Request, res: Response) => {
   const { start_day, start_time, duration, end_day, is_bulk } = req.body;
 
   const timeslotService = new TimeslotService(
@@ -39,7 +39,7 @@ export const store = async (data: any, req: Request, res: Response) => {
     msg: timeslotService.fails()
       ? `${timeslotService.failedSolts().length} Timeslot[s] is already exsist!`
       : 'Time slot created successfully',
-    body: timeslotService.failedSolts()
+    body: timeslotService.failedSolts(),
   });
 };
 
