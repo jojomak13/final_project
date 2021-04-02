@@ -1,4 +1,4 @@
-import { AuthTypes } from '@hti/common';
+import { AuthTypes, LocaleColumn, Prefix, SessionFees } from '@hti/common';
 import mongoose, { Schema } from 'mongoose';
 import { certificateSchema } from '../database/migration/certificateSchema';
 import { educationSchema } from '../database/migration/educationSchema';
@@ -7,30 +7,13 @@ import { Auth, loginPayload } from '../helpers/Auth';
 import { Password } from '../helpers/password';
 import { CountryDocument } from './Country';
 import { Gender } from './enums/gender';
-import { Prefix } from './enums/prefix';
 import { JobDocument } from './Job';
 import { LanguageDocument } from './Language';
 import { SpecializationDocument } from './Specialization';
-import { ILocaleColumn } from './types/ILocaleColumn';
-
-interface IFees {
-  usd: {
-    half: number;
-    full: number;
-  };
-  pound: {
-    half: number;
-    full: number;
-  };
-}
-
-interface SessionFees {
-  video: IFees;
-}
 
 interface DoctorAttrs {
-  name: ILocaleColumn[];
-  title: ILocaleColumn[];
+  name: LocaleColumn[];
+  title: LocaleColumn[];
   email: string;
   phone: string;
   gender: Gender;
@@ -40,7 +23,7 @@ interface DoctorAttrs {
   country: CountryDocument;
   approved: boolean;
   prefix: Prefix;
-  biography: ILocaleColumn[];
+  biography: LocaleColumn[];
   job: JobDocument;
   fees: SessionFees;
   languages: Array<LanguageDocument>;
@@ -53,8 +36,8 @@ interface DoctorAttrs {
 
 interface DoctorDocument extends mongoose.Document {
   id: string;
-  name: ILocaleColumn[];
-  title: ILocaleColumn[];
+  name: LocaleColumn[];
+  title: LocaleColumn[];
   email: string;
   phone: string;
   gender: Gender;
@@ -64,7 +47,7 @@ interface DoctorDocument extends mongoose.Document {
   country: CountryDocument;
   approved: boolean;
   prefix: Prefix;
-  biography: ILocaleColumn[];
+  biography: LocaleColumn[];
   job: JobDocument;
   fees: SessionFees;
   new_fees?: SessionFees;

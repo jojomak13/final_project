@@ -1,25 +1,10 @@
 import mongoose, { Schema } from 'mongoose';
-import { Prefix } from './enums/prefix';
-
-interface IFees {
-  usd: {
-    half: number;
-    full: number;
-  };
-  pound: {
-    half: number;
-    full: number;
-  };
-}
-
-interface SessionFees {
-  video: IFees;
-}
+import { LocaleColumn, Prefix, SessionFees } from '@hti/common';
 
 export interface DoctorAttrs {
   id: string;
-  name: string;
-  title: string;
+  name: LocaleColumn[];
+  title: LocaleColumn[];
   email: string;
   phone: string;
   image?: string;
@@ -29,8 +14,8 @@ export interface DoctorAttrs {
 
 export interface DoctorDocument extends mongoose.Document {
   id: string;
-  name: string;
-  title: string;
+  name: LocaleColumn[];
+  title: LocaleColumn[];
   email: string;
   phone: string;
   image?: string;
@@ -45,11 +30,21 @@ interface DoctorModel extends mongoose.Model<DoctorDocument> {
 const DoctorSchema = new Schema(
   {
     name: {
-      type: String,
+      type: [
+        {
+          lang: String,
+          value: String,
+        },
+      ],
       required: true,
     },
     title: {
-      type: String,
+      type: [
+        {
+          lang: String,
+          value: String,
+        },
+      ],
       required: true,
     },
     email: {

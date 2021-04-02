@@ -1,14 +1,13 @@
+import { LocaleColumn } from '@hti/common';
 import mongoose from 'mongoose';
 
 interface JobAttrs {
-  name_en: string;
-  name_ar: string;
+  name: LocaleColumn[];
 }
 
 export interface JobDocument extends mongoose.Document {
   id: string;
-  name_en: string;
-  name_ar: string;
+  name: LocaleColumn[];
 }
 
 interface JobModel extends mongoose.Model<JobDocument> {
@@ -16,12 +15,13 @@ interface JobModel extends mongoose.Model<JobDocument> {
 }
 
 const JobSchema = new mongoose.Schema({
-  name_en: {
-    type: String,
-    required: true,
-  },
-  name_ar: {
-    type: String,
+  name: {
+    type: [
+      {
+        lang: String,
+        value: String,
+      },
+    ],
     required: true,
   },
 });

@@ -1,14 +1,13 @@
+import { LocaleColumn } from '@hti/common';
 import mongoose, { Schema, model } from 'mongoose';
 
 interface LanguageAttrs {
-  name_en: string;
-  name_ar: string;
+  name: LocaleColumn[];
 }
 
 export interface LanguageDocument extends mongoose.Document {
   id: string;
-  name_en: string;
-  name_ar: string;
+  name: LocaleColumn[];
 }
 
 interface LanguageModel extends mongoose.Model<LanguageDocument> {
@@ -17,12 +16,13 @@ interface LanguageModel extends mongoose.Model<LanguageDocument> {
 
 const languageSchema = new Schema(
   {
-    name_en: {
-      type: String,
-      required: true,
-    },
-    name_ar: {
-      type: String,
+    name: {
+      type: [
+        {
+          lang: String,
+          value: String,
+        },
+      ],
       required: true,
     },
   },
