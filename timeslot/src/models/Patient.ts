@@ -1,6 +1,6 @@
 import mongoose, { Schema, model } from 'mongoose';
 
-interface Patientatters {
+interface Patientattrs {
   id: string;
   name: string;
   email: string;
@@ -17,7 +17,7 @@ export interface PatientDocument extends mongoose.Document {
 }
 
 interface PatientModel extends mongoose.Model<PatientDocument> {
-  build(atters: Patientatters): PatientDocument;
+  build(atters: Patientattrs): PatientDocument;
 }
 
 const PatientSchema = new Schema(
@@ -52,8 +52,11 @@ const PatientSchema = new Schema(
 
 PatientSchema.set('versionKey', 'version');
 
-PatientSchema.statics.build = (atters: Patientatters) => {
-  return new Patient(atters);
+PatientSchema.statics.build = (attrs: Patientattrs) => {
+  return new Patient({
+    _id: attrs.id,
+    ...attrs,
+  });
 };
 
 const Patient = model<PatientDocument, PatientModel>('Patient', PatientSchema);

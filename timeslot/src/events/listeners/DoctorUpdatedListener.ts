@@ -7,11 +7,15 @@ class DoctorUpdatedListener extends Listener<DoctorUpdatedEvent> {
   public queueGroupName = 'timeslot';
 
   public async onMessage(data: DoctorUpdatedEvent['data'], message: Message) {
-    // const doctor = 
+    const doctor = await Doctor.findById(data.id);
 
-    // await doctor.save();
+    if (!doctor) {
+      throw new Error();
+    }
 
-    console.log(data);
+    doctor.set(data);
+
+    await doctor.save();
 
     message.ack();
   }

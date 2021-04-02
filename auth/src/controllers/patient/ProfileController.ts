@@ -28,7 +28,9 @@ export const update = async (data: any, req: Request, res: Response) => {
     };
   }
 
-  await patient.updateOne(data);
+  patient.set(data);
+
+  await patient.save();
 
   const publisher = new PatientUpdatedPublisher(natsWrapper.client);
   await publisher.publish({

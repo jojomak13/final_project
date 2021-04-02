@@ -1,7 +1,7 @@
 import { natsWrapper } from '@hti/common';
 import mongoose from 'mongoose';
+import listeners from './src/events/listeners';
 import { app } from './src/app';
-import { PatientCreatedListener } from './src/events/listeners/PatientCreatedListener';
 
 const setup = async () => {
   const envKey = [
@@ -34,7 +34,7 @@ const setup = async () => {
     });
 
     // Start Listenrs
-    new PatientCreatedListener(natsWrapper.client).listen();
+    listeners();
 
     await mongoose.connect(process.env.DB_URI!, {
       autoIndex: true,

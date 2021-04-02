@@ -36,7 +36,9 @@ export const update = async (data: any, req: Request, res: Response) => {
     };
   }
 
-  await Doctor.updateOne(data);
+  doctorBasicInfo.set(data);
+
+  await doctorBasicInfo.save();
 
   const publisher = new DoctorUpdatedPublisher(natsWrapper.client);
   await publisher.publish({

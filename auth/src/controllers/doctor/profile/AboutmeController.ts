@@ -27,7 +27,9 @@ export const update = async (data: any, req: Request, res: Response) => {
     throw new BadRequestError('oops, somthing went wrong');
   }
 
-  await Doctor.updateOne(data);
+  doctorAboutme.set(data);
+
+  await doctorAboutme.save();
 
   const publisher = new DoctorUpdatedPublisher(natsWrapper.client);
   await publisher.publish({

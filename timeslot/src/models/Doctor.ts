@@ -24,7 +24,7 @@ export interface DoctorDocument extends mongoose.Document {
 }
 
 interface DoctorModel extends mongoose.Model<DoctorDocument> {
-  build(atters: DoctorAttrs): DoctorDocument;
+  build(attrs: DoctorAttrs): DoctorDocument;
 }
 
 const DoctorSchema = new Schema(
@@ -81,8 +81,11 @@ const DoctorSchema = new Schema(
 
 DoctorSchema.set('versionKey', 'version');
 
-DoctorSchema.statics.build = (atters: DoctorAttrs) => {
-  return new Doctor(atters);
+DoctorSchema.statics.build = (attrs: DoctorAttrs) => {
+  return new Doctor({
+    _id: attrs.id,
+    ...attrs,
+  });
 };
 
 const Doctor = mongoose.model<DoctorDocument, DoctorModel>(
