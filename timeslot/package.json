@@ -34,6 +34,7 @@
     "express-async-errors": "^3.1.1",
     "joi": "^17.4.0",
     "moment": "^2.29.1",
-    "mongoose": "^5.11.19"
+    "mongoose": "^5.11.19",
+    "node-nats-streaming": "^0.3.2"
   }
 }
