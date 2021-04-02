@@ -22,7 +22,7 @@ app.use(() => {
 
 // Factories
 // countryFactory.create(15);
-// patientFactory.create(20)
+// patientFactory.create(20);
 
 // Error Handler
 app.use(errorHandler);
