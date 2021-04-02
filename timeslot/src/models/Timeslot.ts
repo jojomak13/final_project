@@ -1,12 +1,12 @@
 import mongoose, { Schema } from 'mongoose';
+import { Doctor, DoctorDocument } from './Doctor';
 import { Duration } from './enums/DurationEnum';
 
 interface TimeslotAttrs {
   duration: Duration;
   start_time: Date;
   end_time: Date;
-  // TODO:: add doctor schema
-  doctor: string;
+  doctor: DoctorDocument;
 }
 
 export interface TimeslotDocument extends mongoose.Document {
@@ -14,8 +14,7 @@ export interface TimeslotDocument extends mongoose.Document {
   duration: Duration;
   start_time: Date;
   end_time: Date;
-  // TODO:: add doctor schema
-  doctor: string;
+  doctor: DoctorDocument;
   is_booked: boolean;
 }
 
@@ -40,6 +39,7 @@ const TimeslotSchema = new Schema(
     },
     doctor: {
       type: Schema.Types.ObjectId,
+      ref: Doctor,
       required: true,
     },
     is_booked: {

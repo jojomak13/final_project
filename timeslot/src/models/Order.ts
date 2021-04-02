@@ -1,23 +1,23 @@
+import { OrderStatus, OrderTypes } from '@hti/common';
 import mongoose, { Schema, model } from 'mongoose';
-import { TimeslotDocument } from './Timeslot';
+import { Patient, PatientDocument } from './Patient';
+import { Timeslot, TimeslotDocument } from './Timeslot';
 
 interface OrderAtters {
   timeSolt: TimeslotDocument;
-  // TODO patient document
-  patient: string;
-  type: SessionType;
-  status?: SessionStatus;
-  expiresAt?: string;
+  patient: PatientDocument;
+  type: OrderTypes;
+  status: OrderStatus;
+  expires_at: string;
 }
 
 interface OrderDocument extends mongoose.Document {
   id: string;
   timeSolt: TimeslotDocument;
-  // TODO patient document
-  patient: string;
-  type: SessionType;
-  status?: SessionStatus;
-  expiresAt?: string;
+  patient: PatientDocument;
+  type: OrderTypes;
+  status: OrderStatus;
+  expires_at: string;
 }
 
 interface OrderModel extends mongoose.Model<OrderDocument> {
@@ -26,28 +26,33 @@ interface OrderModel extends mongoose.Model<OrderDocument> {
 
 const OrderSchema = new Schema(
   {
-    name: {
-      type: String,
+    timeslot: {
+      type: Schema.Types.ObjectId,
+      ref: Timeslot,
       required: true,
     },
-    email: {
-      type: String,
+    patient: {
+      type: Schema.Types.ObjectId,
+      ref: Patient,
       required: true,
-      unique: true,
     },
-    phone: {
+    type: {
       type: String,
+      enum: Object.values(OrderTypes),
       required: true,
-      unique: true,
     },
- 
-    image: {
+    status: {
       type: String,
-    }
-
+      enum: Object.values(OrderStatus),
+      required: true,
+    },
+    expires_at: {
+      type: Date,
+      required: true,
+    },
   },
   {
-    versionKey: false,
+    timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
     toJSON: {
       transform(_doc, ret) {
         ret.id = ret._id;

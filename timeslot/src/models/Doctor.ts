@@ -1,50 +1,77 @@
 import mongoose, { Schema } from 'mongoose';
-import { Duration } from './enums/DurationEnum';
+import { Prefix } from './enums/prefix';
 
-interface TimeslotAttrs {
-  duration: Duration;
-  start_time: Date;
-  end_time: Date;
-  // TODO:: add doctor schema
-  doctor: string;
+interface IFees {
+  usd: {
+    half: number;
+    full: number;
+  };
+  pound: {
+    half: number;
+    full: number;
+  };
 }
 
-export interface TimeslotDocument extends mongoose.Document {
+interface SessionFees {
+  video: IFees;
+}
+
+export interface DoctorAttrs {
   id: string;
-  duration: Duration;
-  start_time: Date;
-  end_time: Date;
-  // TODO:: add doctor schema
-  doctor: string;
-  is_booked: boolean;
+  name: string;
+  title: string;
+  email: string;
+  phone: string;
+  image?: string;
+  prefix: Prefix;
+  fees: SessionFees;
 }
 
-interface TimeslotModel extends mongoose.Model<TimeslotDocument> {
-  build(atters: TimeslotAttrs): TimeslotDocument;
+export interface DoctorDocument extends mongoose.Document {
+  id: string;
+  name: string;
+  title: string;
+  email: string;
+  phone: string;
+  image?: string;
+  prefix: Prefix;
+  fees: SessionFees;
 }
 
-const TimeslotSchema = new Schema(
+interface DoctorModel extends mongoose.Model<DoctorDocument> {
+  build(atters: DoctorAttrs): DoctorDocument;
+}
+
+const DoctorSchema = new Schema(
   {
-    duration: {
+    name: {
       type: String,
-      enum: Object.values(Duration),
       required: true,
     },
-    start_time: {
-      type: Schema.Types.Date,
+    title: {
+      type: String,
       required: true,
     },
-    end_time: {
-      type: Schema.Types.Date,
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    phone: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    image: {
+      type: String,
+    },
+    prefix: {
+      type: String,
+      enum: Object.values(Prefix),
       required: true,
     },
-    doctor: {
-      type: Schema.Types.ObjectId,
-      required: true,
-    },
-    is_booked: {
-      type: Boolean,
-      default: false,
+    fees: {
+      type: [],
     },
   },
   {
@@ -57,15 +84,15 @@ const TimeslotSchema = new Schema(
   }
 );
 
-TimeslotSchema.set('versionKey', 'version');
+DoctorSchema.set('versionKey', 'version');
 
-TimeslotSchema.statics.build = (atters: TimeslotAttrs) => {
-  return new Timeslot(atters);
+DoctorSchema.statics.build = (atters: DoctorAttrs) => {
+  return new Doctor(atters);
 };
 
-const Timeslot = mongoose.model<TimeslotDocument, TimeslotModel>(
-  'Timeslot',
-  TimeslotSchema
+const Doctor = mongoose.model<DoctorDocument, DoctorModel>(
+  'Doctor',
+  DoctorSchema
 );
 
-export { Timeslot };
+export { Doctor };

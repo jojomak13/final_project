@@ -1,13 +1,14 @@
 import mongoose, { Schema, model } from 'mongoose';
 
 interface Patientatters {
+  id: string;
   name: string;
   email: string;
   phone: string;
   image?: string;
 }
 
-interface PatientDocument extends mongoose.Document {
+export interface PatientDocument extends mongoose.Document {
   id: string;
   name: string;
   email: string;
@@ -35,14 +36,11 @@ const PatientSchema = new Schema(
       required: true,
       unique: true,
     },
- 
     image: {
       type: String,
-    }
-
+    },
   },
   {
-    versionKey: false,
     toJSON: {
       transform(_doc, ret) {
         ret.id = ret._id;
