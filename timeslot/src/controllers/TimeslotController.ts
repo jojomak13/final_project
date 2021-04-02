@@ -48,7 +48,7 @@ export const destroy = async (req: Request, res: Response) => {
 
   if (!timeSlot) throw new NotFoundError();
 
-  if (timeSlot.order_id || timeSlot.doctor_id.toString() !== req.user!.id) {
+  if (timeSlot.is_booked || timeSlot.doctor.id.toString() !== req.user!.id) {
     throw new BadRequestError('Not Allowed to remove this time slot');
   }
 

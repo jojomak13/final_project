@@ -16,6 +16,14 @@ spec:
         - name: auth
           image: jojomak/auth
           env:
+            - name: NATS_URL
+              value: 'http://nats-service:4222'
+            - name: NATS_CLUSTER_ID
+              value: final_project
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
             - name: TOKEN_EXPIRE_PERIOD
               value: '15m'
             - name: REFRESH_TOKEN_EXPIRE_PERIOD

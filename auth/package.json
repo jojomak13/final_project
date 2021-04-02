@@ -29,7 +29,7 @@
     "typescript": "^4.2.3"
   },
   "dependencies": {
-    "@hti/common": "^1.0.12",
+    "@hti/common": "^1.0.16",
     "@types/faker": "^5.1.7",
     "bcrypt": "^5.0.1",
     "express": "^4.17.1",

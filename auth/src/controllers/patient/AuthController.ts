@@ -1,9 +1,10 @@
 import { refreshTokenPayload } from '../../helpers/Auth';
-import { BadRequestError, DBValidationError } from '@hti/common';
+import { BadRequestError, DBValidationError, natsWrapper } from '@hti/common';
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { Password } from '../../helpers/password';
 import { Patient } from '../../models/Patient';
+import { PatientCreatedPublisher } from '../../events/publishers/PatientCreatedPublisher';
 
 export const signup = async (data: any, req: Request, res: Response) => {
   const patient = await Patient.findOne().or([
@@ -24,6 +25,15 @@ export const signup = async (data: any, req: Request, res: Response) => {
 
   const newPatient = Patient.build(data);
   await newPatient.save();
+
+  const publisher = new PatientCreatedPublisher(natsWrapper.client);
+  await publisher.publish({
+    id: newPatient.id,
+    name: newPatient.name,
+    email: newPatient.email,
+    phone: newPatient.phone,
+    image: newPatient.image,
+  });
 
   return res.status(201).json({
     status: true,

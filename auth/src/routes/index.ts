@@ -3,7 +3,7 @@ import { PatientRouter } from './patient';
 import { doctorRouter } from './doctor/index';
 
 const router = Router();
-router.use('/client', PatientRouter);
+router.use('/patient', PatientRouter);
 router.use('/doctor', doctorRouter);
 
 router.get('/', async (_req, res) => {

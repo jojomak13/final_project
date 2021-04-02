@@ -1,9 +1,10 @@
 import { refreshTokenPayload } from '../../helpers/Auth';
-import { BadRequestError, DBValidationError } from '@hti/common';
+import { BadRequestError, DBValidationError, natsWrapper } from '@hti/common';
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { Password } from '../../helpers/password';
 import { Doctor } from '../../models/Doctor';
+import { DoctorApprovedPublisher } from '../../events/publishers/DoctorApprovedPublisher';
 
 export const signup = async (data: any, _req: Request, res: Response) => {
   const doctor = await Doctor.findOne().or([
@@ -24,6 +25,19 @@ export const signup = async (data: any, _req: Request, res: Response) => {
 
   const newDoctor = Doctor.build(data);
   await newDoctor.save();
+
+  // TODO:: move this to admin
+  const publisher = new DoctorApprovedPublisher(natsWrapper.client);
+  await publisher.publish({
+    id: newDoctor.id,
+    name: newDoctor.name,
+    title: newDoctor.title,
+    email: newDoctor.email,
+    phone: newDoctor.phone,
+    fees: newDoctor.fees,
+    prefix: newDoctor.prefix,
+    image: newDoctor.image,
+  });
 
   return res.status(201).json({
     status: true,

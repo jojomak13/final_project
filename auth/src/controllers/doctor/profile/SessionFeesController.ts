@@ -1,5 +1,6 @@
-import { BadRequestError } from '@hti/common';
+import { BadRequestError, natsWrapper } from '@hti/common';
 import { Request, Response } from 'express';
+import { DoctorUpdatedPublisher } from '../../../events/publishers/DoctorUpdatedPublisher';
 import { Doctor } from '../../../models/Doctor';
 
 export const edit = async (req: Request, res: Response) => {
@@ -26,6 +27,14 @@ export const update = async (data: any, req: Request, res: Response) => {
     doctor.set('new_fees', data);
     doctor.set('fees_updated_at', new Date().toISOString());
     await doctor.save();
+
+    // TODO:: move this to admin
+    const publisher = new DoctorUpdatedPublisher(natsWrapper.client);
+    await publisher.publish({
+      id: doctor.id,
+      fees: doctor.fees,
+    });
+
     return res.json({
       status: true,
       msg: 'updated fees going to reviewed by admins',

@@ -19,7 +19,7 @@ interface DoctorAttrs {
   gender: Gender;
   date_of_birth: Date;
   password: string;
-  image?: String;
+  image?: string;
   country: CountryDocument;
   approved: boolean;
   prefix: Prefix;
@@ -43,7 +43,7 @@ interface DoctorDocument extends mongoose.Document {
   gender: Gender;
   date_of_birth: Date;
   password: string;
-  image?: String;
+  image?: string;
   country: CountryDocument;
   approved: boolean;
   prefix: Prefix;

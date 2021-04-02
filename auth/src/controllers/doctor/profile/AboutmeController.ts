@@ -1,5 +1,6 @@
-import { BadRequestError } from '@hti/common';
+import { BadRequestError, natsWrapper } from '@hti/common';
 import { Request, Response } from 'express';
+import { DoctorUpdatedPublisher } from '../../../events/publishers/DoctorUpdatedPublisher';
 import { Doctor } from '../../../models/Doctor';
 
 export const edit = async (req: Request, res: Response) => {
@@ -27,6 +28,13 @@ export const update = async (data: any, req: Request, res: Response) => {
   }
 
   await Doctor.updateOne(data);
+
+  const publisher = new DoctorUpdatedPublisher(natsWrapper.client);
+  await publisher.publish({
+    id: doctorAboutme.id,
+    title: doctorAboutme.title,
+    prefix: doctorAboutme.prefix,
+  });
 
   res.json({ status: true, msg: 'about me updated successfully' });
 };
