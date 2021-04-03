@@ -1,4 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
+import mongooseDelete from 'mongoose-delete';
 import { Doctor, DoctorDocument } from './Doctor';
 import { Duration } from './enums/DurationEnum';
 
@@ -16,6 +17,8 @@ export interface TimeslotDocument extends mongoose.Document {
   end_time: Date;
   doctor: DoctorDocument;
   is_booked: boolean;
+  created_at: Date;
+  updated_at: Date;
 }
 
 interface TimeslotModel extends mongoose.Model<TimeslotDocument> {
@@ -48,6 +51,7 @@ const TimeslotSchema = new Schema(
     },
   },
   {
+    timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
     toJSON: {
       transform(_doc, ret) {
         ret.id = ret._id;
@@ -56,6 +60,11 @@ const TimeslotSchema = new Schema(
     },
   }
 );
+
+TimeslotSchema.plugin(mongooseDelete, {
+  deleted_at: true,
+  overrideMethods: true,
+});
 
 TimeslotSchema.set('versionKey', 'version');
 

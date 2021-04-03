@@ -25,7 +25,7 @@ export const store = async (req: Request, res: Response) => {
   const doctor = await Doctor.findById(req.user!.id);
 
   if (!doctor) {
-    throw new NotFoundError();
+    throw new Error(`doctor [${req.user?.id}] not found in timeslot service`);
   }
 
   const timeslotService = new TimeslotService(
@@ -51,18 +51,20 @@ export const store = async (req: Request, res: Response) => {
 };
 
 export const destroy = async (req: Request, res: Response) => {
-  const timeSlot = await Timeslot.findById(req.params.id);
+  const timeslot = await Timeslot.findById(req.params.id);
 
-  if (!timeSlot) throw new NotFoundError();
+  if (!timeslot) throw new NotFoundError();
 
-  if (timeSlot.is_booked || timeSlot.doctor.id.toString() !== req.user!.id) {
+  if (timeslot.is_booked || timeslot.doctor.toString() !== req.user!.id) {
     throw new BadRequestError('Not Allowed to remove this time slot');
   }
 
-  await timeSlot.remove();
+  if (timeslot.created_at.getTime() !== timeslot.updated_at.getTime())
+    await timeslot.delete();
+  else await timeslot.remove();
 
   return res.json({
     status: true,
-    msg: 'timeslot deleted success',
+    msg: 'time slot deleted success',
   });
 };

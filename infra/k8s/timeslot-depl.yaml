@@ -24,6 +24,8 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
+            - name: ORDER_EXPIRED_PERIOD
+              value: '20'
             - name: TOKEN_EXPIRE_PERIOD
               value: '15m'
             - name: REFRESH_TOKEN_EXPIRE_PERIOD

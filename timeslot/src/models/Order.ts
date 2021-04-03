@@ -3,25 +3,25 @@ import mongoose, { Schema, model } from 'mongoose';
 import { Patient, PatientDocument } from './Patient';
 import { Timeslot, TimeslotDocument } from './Timeslot';
 
-interface OrderAtters {
-  timeSolt: TimeslotDocument;
+interface OrderAttrs {
+  timeslot: TimeslotDocument;
   patient: PatientDocument;
   type: OrderTypes;
   status: OrderStatus;
-  expires_at: string;
+  expires_at: Date;
 }
 
 interface OrderDocument extends mongoose.Document {
   id: string;
-  timeSolt: TimeslotDocument;
+  timeslot: TimeslotDocument;
   patient: PatientDocument;
   type: OrderTypes;
   status: OrderStatus;
-  expires_at: string;
+  expires_at: Date;
 }
 
 interface OrderModel extends mongoose.Model<OrderDocument> {
-  build(atters: OrderAtters): OrderDocument;
+  build(attrs: OrderAttrs): OrderDocument;
 }
 
 const OrderSchema = new Schema(
@@ -64,10 +64,10 @@ const OrderSchema = new Schema(
 
 OrderSchema.set('versionKey', 'version');
 
-OrderSchema.statics.build = (atters: OrderAtters) => {
+OrderSchema.statics.build = (atters: OrderAttrs) => {
   return new Order(atters);
 };
 
-const Order = model<OrderDocument, OrderModel>('Patient', OrderSchema);
+const Order = model<OrderDocument, OrderModel>('Order', OrderSchema);
 
 export { Order };
