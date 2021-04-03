@@ -22,3 +22,7 @@ spec:
             backend:
               serviceName: timeslot-service
               servicePort: 3000
+          - path: /api/order/?(.*)
+            backend:
+              serviceName: timeslot-service
+              servicePort: 3000

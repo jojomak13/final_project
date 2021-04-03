@@ -1,5 +1,6 @@
 import { BadRequestError, NotFoundError } from '@hti/common';
 import { Request, Response } from 'express';
+import { Doctor } from '../models/Doctor';
 import { Timeslot } from '../models/Timeslot';
 import { TimeslotService } from '../services/TimeslotService';
 
@@ -10,7 +11,7 @@ export const show = async (req: Request, res: Response) => {
     throw new NotFoundError();
   }
 
-  const timeslots = await Timeslot.find({ doctor_id: doctorId });
+  const timeslots = await Timeslot.find({ doctor: doctorId });
 
   res.json({
     status: true,
@@ -21,11 +22,17 @@ export const show = async (req: Request, res: Response) => {
 export const store = async (req: Request, res: Response) => {
   const { start_day, start_time, duration, end_day, is_bulk } = req.body;
 
+  const doctor = await Doctor.findById(req.user!.id);
+
+  if (!doctor) {
+    throw new NotFoundError();
+  }
+
   const timeslotService = new TimeslotService(
     start_day,
     start_time,
     duration,
-    req.user!.id
+    doctor
   );
 
   if (is_bulk) {

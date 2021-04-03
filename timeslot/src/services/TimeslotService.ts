@@ -1,5 +1,6 @@
 import { Timeslot, TimeslotDocument } from '../models/Timeslot';
 import moment from 'moment';
+import { DoctorDocument } from '../models/Doctor';
 
 class TimeslotService {
   private timeSlot: any;
@@ -11,13 +12,13 @@ class TimeslotService {
    * @param startDay
    * @param startTime
    * @param duration
-   * @param userId
+   * @param doctor DoctorDocument
    */
   public constructor(
     private startDay: any,
     startTime: any,
     private duration: any,
-    private userId: string
+    private doctor: DoctorDocument
   ) {
     this.startTime = moment(parseInt(startTime)).format('HH:mm:ss');
   }
@@ -32,7 +33,7 @@ class TimeslotService {
         .add(this.duration, 'minutes')
         .toISOString(),
       duration: this.duration,
-      doctor_id: this.userId,
+      doctor: this.doctor,
     };
 
     this.timeSlot = timeSlot;
@@ -44,7 +45,7 @@ class TimeslotService {
         $gte: moment(this.startDay).toDate(),
         $lte: moment(this.startDay).endOf('day').toDate(),
       },
-      doctor_id: this.userId,
+      doctor: this.doctor,
     });
 
     return timeslots;
