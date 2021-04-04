@@ -18,6 +18,7 @@ interface OrderDocument extends mongoose.Document {
   type: OrderTypes;
   status: OrderStatus;
   expires_at: Date;
+  isValidReschedule(timeslot: TimeslotDocument): boolean;
 }
 
 interface OrderModel extends mongoose.Model<OrderDocument> {
@@ -66,6 +67,15 @@ OrderSchema.set('versionKey', 'version');
 
 OrderSchema.statics.build = (atters: OrderAttrs) => {
   return new Order(atters);
+};
+
+OrderSchema.methods.isValidReschedule = function (timeslot) {
+  return (
+    // @ts-ignore
+    this.timeslot.doctor.toString() === timeslot.doctor.toString() &&
+    // @ts-ignore
+    this.status === OrderStatus.Paid
+  );
 };
 
 const Order = model<OrderDocument, OrderModel>('Order', OrderSchema);

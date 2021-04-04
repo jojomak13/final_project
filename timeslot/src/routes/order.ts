@@ -9,7 +9,7 @@ router.post('/', async (req: Request, res: Response) => {
   const data = await StoreOrderReruest.validateAsync(req.body, {
     abortEarly: false,
     stripUnknown: true,
-  }).catch((err) => { 
+  }).catch((err) => {
     throw new RequestValidationError(err);
   });
 
@@ -26,7 +26,6 @@ router.patch('/reschedule/:id', async (req: Request, res: Response) => {
 
   await OrderController.reschedule(data, req, res);
 });
-
 
 router.delete('/:id', OrderController.cancel);
 

@@ -63,7 +63,7 @@ const DoctorSchema = new Schema(
     prefix: {
       type: String,
       enum: Object.values(Prefix),
-      // TODO:: remove comment
+      // TODO:: remove comment after creating admin
       // required: true,
     },
     fees: {

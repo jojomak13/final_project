@@ -44,8 +44,7 @@ export const store = async (data: any, req: Request, res: Response) => {
   });
 };
 
-export const reschedule = async (data: any,req: Request, res: Response) => {
-
+export const reschedule = async (data: any, req: Request, res: Response) => {
   //create new order
   const timeslot = await Timeslot.findById(data.timeslot);
   const patient = await Patient.findById(req.user?.id);
@@ -77,11 +76,14 @@ export const reschedule = async (data: any,req: Request, res: Response) => {
     expires_at: expiration,
   });
 
-
   // cancel old order
   const oldOrder = await Order.findById(req.params.id).populate('timeslot');
 
-  if (!oldOrder || oldOrder.patient.toString() !== req.user?.id) {
+  if (
+    !oldOrder ||
+    !oldOrder.isValidReschedule(timeslot) ||
+    oldOrder.patient.toString() !== req.user?.id
+  ) {
     throw new NotFoundError();
   }
 
@@ -100,13 +102,10 @@ export const reschedule = async (data: any,req: Request, res: Response) => {
   await oldOrder.save();
   await oldOrder.timeslot.save();
 
-  // TODO:: created refund logic here for reschedule
-
   return res.json({
     status: true,
     msg: 'order rescheduled successfully',
-  }); 
-
+  });
 };
 
 export const cancel = async (req: Request, res: Response) => {
