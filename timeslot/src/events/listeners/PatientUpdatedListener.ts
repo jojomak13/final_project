@@ -1,10 +1,11 @@
 import { Listener, PatientUpdatedEvent, Subjects } from '@hti/common';
 import { Message } from 'node-nats-streaming';
 import { Patient } from '../../models/Patient';
+import { queueGroupName } from './queueGroupName';
 
 class PatientUpdatedListener extends Listener<PatientUpdatedEvent> {
   public readonly subject = Subjects.PatientUpdated;
-  public queueGroupName = 'timeslot';
+  public queueGroupName = queueGroupName;
 
   public async onMessage(data: PatientUpdatedEvent['data'], message: Message) {
     const { id, name, email, phone, image } = data;

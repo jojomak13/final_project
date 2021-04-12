@@ -1,5 +1,11 @@
-import { BadRequestError, NotFoundError, OrderStatus } from '@hti/common';
+import {
+  BadRequestError,
+  natsWrapper,
+  NotFoundError,
+  OrderStatus,
+} from '@hti/common';
 import { Request, Response } from 'express';
+import { OrderCreatedPublisher } from '../events/publishers/OrderCreatedPublisher';
 import { Order } from '../models/Order';
 import { Patient } from '../models/Patient';
 import { Timeslot } from '../models/Timeslot';
@@ -37,6 +43,11 @@ export const store = async (data: any, req: Request, res: Response) => {
 
   await order.save();
   await timeslot.save();
+
+  new OrderCreatedPublisher(natsWrapper.client).publish({
+    id: order.id,
+    expiresAt: order.expires_at,
+  });
 
   res.status(201).json({
     status: true,
