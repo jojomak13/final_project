@@ -11,7 +11,7 @@ import { Patient } from '../models/Patient';
 import { Timeslot } from '../models/Timeslot';
 
 export const store = async (data: any, req: Request, res: Response) => {
-  const timeslot = await Timeslot.findById(data.timeslot);
+  const timeslot = await Timeslot.findById(data.timeslot).populate('doctor');
   const patient = await Patient.findById(req.user?.id);
 
   if (!timeslot) throw new NotFoundError();
@@ -40,6 +40,8 @@ export const store = async (data: any, req: Request, res: Response) => {
     status: OrderStatus.AwaitPayment,
     expires_at: expiration,
   });
+
+  order.setPrice(timeslot, req.body.type, req.user!.country.name);
 
   await order.save();
   await timeslot.save();

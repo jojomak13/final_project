@@ -23,7 +23,7 @@ export const update = async (data: any, req: Request, res: Response) => {
   const timeDif =
     new Date().getFullYear() - doctor.fees_updated_at.getFullYear();
 
-  if (timeDif >= 1) {
+  if (timeDif >= 1.0) {
     doctor.set('new_fees', data);
     doctor.set('fees_updated_at', new Date().toISOString());
     await doctor.save();
@@ -32,7 +32,7 @@ export const update = async (data: any, req: Request, res: Response) => {
     const publisher = new DoctorUpdatedPublisher(natsWrapper.client);
     await publisher.publish({
       id: doctor.id,
-      fees: doctor.fees,
+      fees: doctor.new_fees,
     });
 
     return res.json({

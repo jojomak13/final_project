@@ -5,18 +5,16 @@ const feesSchema = Joi.object({
     half: Joi.number().required(),
     full: Joi.number().required(),
   }).required(),
-  pound: Joi.object({
+  egp: Joi.object({
     half: Joi.number().required(),
     full: Joi.number().required(),
   }).required(),
 }).required();
 
-const SessionFeesRequest = Joi.array()
-  .items(
-    Joi.object({
-      video: feesSchema,
-    })
-  )
-  .required();
+const SessionFeesRequest = Joi.object({
+  video: feesSchema,
+  chat: feesSchema,
+  audio: feesSchema,
+}).required();
 
 export { SessionFeesRequest };

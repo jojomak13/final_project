@@ -1,5 +1,6 @@
 import { OrderStatus, OrderTypes } from '@hti/common';
 import mongoose, { Schema, model } from 'mongoose';
+import { Duration } from './enums/DurationEnum';
 import { Patient, PatientDocument } from './Patient';
 import { Timeslot, TimeslotDocument } from './Timeslot';
 
@@ -19,6 +20,11 @@ interface OrderDocument extends mongoose.Document {
   status: OrderStatus;
   expires_at: Date;
   isValidReschedule(timeslot: TimeslotDocument): boolean;
+  setPrice(
+    timeslot: TimeslotDocument,
+    orderType: OrderTypes,
+    countryName: string
+  ): Boolean;
 }
 
 interface OrderModel extends mongoose.Model<OrderDocument> {
@@ -45,6 +51,10 @@ const OrderSchema = new Schema(
     status: {
       type: String,
       enum: Object.values(OrderStatus),
+      required: true,
+    },
+    price: {
+      type: Number,
       required: true,
     },
     expires_at: {
@@ -76,6 +86,17 @@ OrderSchema.methods.isValidReschedule = function (timeslot) {
     // @ts-ignore
     this.status === OrderStatus.Paid
   );
+};
+
+OrderSchema.methods.setPrice = function (timeslot, orderType, countryName) {
+  const currency = countryName.toLowerCase() === 'egypt' ? 'egp' : 'usd';
+  const duration = timeslot.duration === Duration.fullHour ? 'full' : 'half';
+
+  const price = timeslot.doctor.fees[orderType][currency][duration];
+
+  this.set('price', price);
+
+  return true;
 };
 
 const Order = model<OrderDocument, OrderModel>('Order', OrderSchema);

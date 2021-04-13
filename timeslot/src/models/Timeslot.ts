@@ -28,7 +28,7 @@ interface TimeslotModel extends mongoose.Model<TimeslotDocument> {
 const TimeslotSchema = new Schema(
   {
     duration: {
-      type: String,
+      type: Duration,
       enum: Object.values(Duration),
       required: true,
     },

@@ -67,7 +67,7 @@ const DoctorSchema = new Schema(
       // required: true,
     },
     fees: {
-      type: [],
+      type: {},
     },
   },
   {

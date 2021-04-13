@@ -136,10 +136,10 @@ const DoctorSchema = new mongoose.Schema(
       ref: 'Job',
     },
     fees: {
-      type: [],
+      type: {},
     },
     new_fees: {
-      type: [],
+      type: {},
     },
     fees_updated_at: {
       type: Schema.Types.Date,
