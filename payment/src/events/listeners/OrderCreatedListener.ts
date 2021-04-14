@@ -11,7 +11,7 @@ class OrderCreatedListener extends Listener<OrderCreatedEvent> {
     const order = Order.build({
       id: data.id,
       patient_id: data.patient_id,
-      status: data.satatus,
+      status: data.status,
       price: data.price,
       version: data.version,
     });

@@ -21,11 +21,15 @@ export const checkout = async (req: Request, res: Response) => {
     throw new BadRequestError('this order already paid or cancelled before');
   }
 
+  if (order.patient_id !== req.user?.id) {
+    throw new BadRequestError('not authorized');
+  }
+
   order.set('status', OrderStatus.PaymentComplete);
 
   const charge = await stripe.charges.create({
     source: stripeToken,
-    amount: order.price.amount,
+    amount: order.price.amount * 100,
     currency: order.price.currency,
   });
 

@@ -48,8 +48,8 @@ export const store = async (data: any, req: Request, res: Response) => {
 
   new OrderCreatedPublisher(natsWrapper.client).publish({
     id: order.id,
-    patient_id: order.patient.id,
-    satatus: order.status,
+    patient_id: order.patient.toString(),
+    status: order.status,
     price: order.price,
     expiresAt: order.expires_at,
     version: order.version,
