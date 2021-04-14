@@ -20,7 +20,7 @@ class ExpirationCompleteListener extends Listener<ExpirationCompleteEvent> {
       throw new Error('نصيبة سودة');
     }
 
-    if (order.status === OrderStatus.PaymentComplete) {
+    if (order.status !== OrderStatus.AwaitPayment) {
       return msg.ack();
     }
 
