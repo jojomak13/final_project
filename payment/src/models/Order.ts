@@ -4,6 +4,7 @@ import mongoose, { Schema, model } from 'mongoose';
 
 interface OrderAttrs {
   id: string;
+  patient_id: string;
   status: OrderStatus;
   price: PriceType;
   version: number;
@@ -11,8 +12,10 @@ interface OrderAttrs {
 
 export interface OrderDocument extends mongoose.Document {
   id: string;
+  patient_id: string;
   status: OrderStatus;
   price: PriceType;
+  version: number;
 }
 
 interface OrderModel extends mongoose.Model<OrderDocument> {
@@ -21,6 +24,10 @@ interface OrderModel extends mongoose.Model<OrderDocument> {
 
 const OrderSchema = new Schema(
   {
+    patient_id: {
+      type: String,
+      required: true,
+    },
     status: {
       type: String,
       enum: Object.values(OrderStatus),

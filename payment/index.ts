@@ -12,6 +12,7 @@ const setup = async () => {
     'NATS_CLUSTER_ID',
     'NATS_CLIENT_ID',
     'NATS_URL',
+    'STRIPE_SECRET_KEY',
   ];
 
   try {

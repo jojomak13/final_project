@@ -1,7 +1,7 @@
 import mongoose, { Schema, model } from 'mongoose';
 import { Order, OrderDocument } from './Order';
 
-enum providerType {
+export enum providerType {
   STRIPE = 'stripe',
 }
 

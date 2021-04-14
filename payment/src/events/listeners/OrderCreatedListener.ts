@@ -10,6 +10,7 @@ class OrderCreatedListener extends Listener<OrderCreatedEvent> {
   public async onMessage(data: OrderCreatedEvent['data'], msg: Message) {
     const order = Order.build({
       id: data.id,
+      patient_id: data.patient_id,
       status: data.satatus,
       price: data.price,
       version: data.version,
