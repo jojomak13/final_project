@@ -5,7 +5,9 @@ import {
   OrderStatus,
 } from '@hti/common';
 import { Request, Response } from 'express';
+import { OrderCancelledPublisher } from '../events/publishers/OrderCancelledPublisher';
 import { OrderCreatedPublisher } from '../events/publishers/OrderCreatedPublisher';
+import { OrderRefundedPublisher } from '../events/publishers/OrderRefundedPublisher';
 import { Order } from '../models/Order';
 import { Patient } from '../models/Patient';
 import { Timeslot } from '../models/Timeslot';
@@ -136,16 +138,32 @@ export const cancel = async (req: Request, res: Response) => {
     throw new BadRequestError('this order already cancelled before');
   }
 
-  order.set({ status: OrderStatus.Canelled });
+  let isRefunded = true;
+
+  if (order.canRefund(order.timeslot)) {
+    order.set({ status: OrderStatus.PaymentRefund });
+  } else {
+    isRefunded = false;
+    order.set({ status: OrderStatus.Canelled });
+  }
+
   order.timeslot.set({ is_booked: false });
-
-  await order.save();
   await order.timeslot.save();
+  await order.save();
 
-  // TODO:: created refund logic here dor canacel
+  const publisherData = {
+    id: order.id,
+    version: order.version,
+  };
+
+  if (isRefunded) {
+    new OrderRefundedPublisher(natsWrapper.client).publish(publisherData);
+  } else {
+    new OrderCancelledPublisher(natsWrapper.client).publish(publisherData);
+  }
 
   return res.json({
     status: true,
-    msg: 'order cancelled successfully',
+    msg: `order cancelled successfully${isRefunded ? ' with refund' : ''}`,
   });
 };

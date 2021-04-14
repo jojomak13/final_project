@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import { app } from './src/app';
 import { OrderCancelledListener } from './src/events/listeners/OrderCancelledListener';
 import { OrderCreatedListener } from './src/events/listeners/OrderCreatedListener';
+import { OrderRefundedListener } from './src/events/listeners/OrderRefundedListener';
 
 const setup = async () => {
   const envKey = [
@@ -36,6 +37,7 @@ const setup = async () => {
 
     // Start Listenrs
     new OrderCreatedListener(natsWrapper.client).listen();
+    new OrderRefundedListener(natsWrapper.client).listen();
     new OrderCancelledListener(natsWrapper.client).listen();
 
     await mongoose.connect(process.env.DB_URI!, {

@@ -1,4 +1,5 @@
 import { OrderStatus, OrderTypes, PriceType } from '@hti/common';
+import moment from 'moment';
 import mongoose, { Schema, model } from 'mongoose';
 import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
 import { Duration } from './enums/DurationEnum';
@@ -29,6 +30,8 @@ interface OrderDocument extends mongoose.Document {
     orderType: OrderTypes,
     countryName: string
   ): Boolean;
+
+  canRefund(timeslot: TimeslotDocument): Boolean;
 }
 
 interface OrderModel extends mongoose.Model<OrderDocument> {
@@ -111,6 +114,23 @@ OrderSchema.methods.setPrice = function (timeslot, orderType, countryName) {
   });
 
   return true;
+};
+
+OrderSchema.methods.canRefund = function (timeslot: TimeslotDocument): Boolean {
+  const fromOrdering = moment
+    .duration(moment().diff(this.get('created_at')))
+    .asHours();
+
+  const fromStart = moment
+    .duration(moment(timeslot.start_time).diff(moment(this.get('created_at'))))
+    .asHours();
+
+  const isPaid = this.get('status') === OrderStatus.PaymentComplete;
+
+  if (Math.floor(fromOrdering) < 12 && Math.floor(fromStart) > 6 && isPaid)
+    return true;
+
+  return false;
 };
 
 const Order = model<OrderDocument, OrderModel>('Order', OrderSchema);
