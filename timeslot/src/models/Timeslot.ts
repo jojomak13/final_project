@@ -22,7 +22,7 @@ export interface TimeslotDocument extends mongoose.Document {
 }
 
 interface TimeslotModel extends mongoose.Model<TimeslotDocument> {
-  build(atters: TimeslotAttrs): TimeslotDocument;
+  build(attrs: TimeslotAttrs): TimeslotDocument;
 }
 
 const TimeslotSchema = new Schema(
@@ -68,8 +68,8 @@ TimeslotSchema.plugin(mongooseDelete, {
 
 TimeslotSchema.set('versionKey', 'version');
 
-TimeslotSchema.statics.build = (atters: TimeslotAttrs) => {
-  return new Timeslot(atters);
+TimeslotSchema.statics.build = (attrs: TimeslotAttrs) => {
+  return new Timeslot(attrs);
 };
 
 const Timeslot = mongoose.model<TimeslotDocument, TimeslotModel>(

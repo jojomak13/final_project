@@ -1,5 +1,6 @@
-import { OrderStatus, OrderTypes } from '@hti/common';
+import { OrderStatus, OrderTypes, PriceType } from '@hti/common';
 import mongoose, { Schema, model } from 'mongoose';
+import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
 import { Duration } from './enums/DurationEnum';
 import { Patient, PatientDocument } from './Patient';
 import { Timeslot, TimeslotDocument } from './Timeslot';
@@ -10,6 +11,7 @@ interface OrderAttrs {
   type: OrderTypes;
   status: OrderStatus;
   expires_at: Date;
+  price?: PriceType;
 }
 
 interface OrderDocument extends mongoose.Document {
@@ -19,6 +21,8 @@ interface OrderDocument extends mongoose.Document {
   type: OrderTypes;
   status: OrderStatus;
   expires_at: Date;
+  price: PriceType;
+  version: number;
   isValidReschedule(timeslot: TimeslotDocument): boolean;
   setPrice(
     timeslot: TimeslotDocument,
@@ -54,7 +58,13 @@ const OrderSchema = new Schema(
       required: true,
     },
     price: {
-      type: Number,
+      type: {
+        amount: Number,
+        currency: {
+          type: String,
+          enum: ['usd', 'egp'],
+        },
+      },
       required: true,
     },
     expires_at: {
@@ -73,10 +83,11 @@ const OrderSchema = new Schema(
   }
 );
 
+OrderSchema.plugin(updateIfCurrentPlugin);
 OrderSchema.set('versionKey', 'version');
 
-OrderSchema.statics.build = (atters: OrderAttrs) => {
-  return new Order(atters);
+OrderSchema.statics.build = (attrs: OrderAttrs) => {
+  return new Order(attrs);
 };
 
 OrderSchema.methods.isValidReschedule = function (timeslot) {
@@ -94,7 +105,10 @@ OrderSchema.methods.setPrice = function (timeslot, orderType, countryName) {
 
   const price = timeslot.doctor.fees[orderType][currency][duration];
 
-  this.set('price', price);
+  this.set('price', {
+    amount: price,
+    currency,
+  });
 
   return true;
 };

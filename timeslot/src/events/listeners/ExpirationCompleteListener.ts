@@ -6,6 +6,7 @@ import {
 } from '@hti/common';
 import { Message } from 'node-nats-streaming';
 import { Order } from '../../models/Order';
+import { OrderCancelledPublisher } from '../publishers/OrderCancelledPublisher';
 import { queueGroupName } from './queueGroupName';
 
 class ExpirationCompleteListener extends Listener<ExpirationCompleteEvent> {
@@ -28,6 +29,11 @@ class ExpirationCompleteListener extends Listener<ExpirationCompleteEvent> {
 
     await order.save();
     await order.timeslot.save();
+
+    new OrderCancelledPublisher(this.client).publish({
+      id: order.id,
+      version: order.version,
+    });
 
     msg.ack();
   }
