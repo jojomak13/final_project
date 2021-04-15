@@ -22,7 +22,7 @@ export const checkout = async (req: Request, res: Response) => {
   }
 
   if (order.patient_id !== req.user?.id) {
-    throw new BadRequestError('not authorized');
+    throw new BadRequestError('not authorized', 401);
   }
 
   order.set('status', OrderStatus.PaymentComplete);
