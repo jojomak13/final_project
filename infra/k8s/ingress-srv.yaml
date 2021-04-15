@@ -18,6 +18,10 @@ spec:
             backend:
               serviceName: auth-service
               servicePort: 3000
+          - path: /api/public/?(.*)
+            backend:
+              serviceName: auth-service
+              servicePort: 3000
           - path: /api/timeslot/?(.*)
             backend:
               serviceName: timeslot-service

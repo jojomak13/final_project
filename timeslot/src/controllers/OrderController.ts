@@ -64,9 +64,10 @@ export const store = async (data: any, req: Request, res: Response) => {
 };
 
 export const reschedule = async (data: any, req: Request, res: Response) => {
-  //create new order
+  //create new order AND get old one
   const timeslot = await Timeslot.findById(data.timeslot);
   const patient = await Patient.findById(req.user?.id);
+  const oldOrder = await Order.findById(req.params.id).populate('timeslot');
 
   if (!timeslot) throw new NotFoundError();
 
@@ -78,6 +79,10 @@ export const reschedule = async (data: any, req: Request, res: Response) => {
     throw new Error(
       `patient [${req.user?.id}] not found inside timeslot service`
     );
+  }
+
+  if(oldOrder?.timeslot.duration !== timeslot.duration){
+    throw new BadRequestError(`You Have to book duration of ${oldOrder?.timeslot.duration} minute`); 
   }
 
   const expiration = new Date();
@@ -96,8 +101,6 @@ export const reschedule = async (data: any, req: Request, res: Response) => {
   });
 
   // cancel old order
-  const oldOrder = await Order.findById(req.params.id).populate('timeslot');
-
   if (
     !oldOrder ||
     !oldOrder.isValidReschedule(timeslot) ||
