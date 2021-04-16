@@ -84,6 +84,12 @@ export const reschedule = async (data: any, req: Request, res: Response) => {
     throw new NotFoundError();
   }
 
+  if (!order.canReschedule(timeslot)) {
+    throw new BadRequestError(
+      "You can't reschedule a session starts before 6 hours"
+    );
+  }
+
   if (timeslot.is_booked)
     throw new BadRequestError('This time slot already reserved before');
 
@@ -120,8 +126,15 @@ export const cancel = async (req: Request, res: Response) => {
     throw new NotFoundError();
   }
 
-  if (order.status === OrderStatus.Canelled) {
+  if (
+    order.status === OrderStatus.Canelled ||
+    order.status === OrderStatus.PaymentRefund
+  ) {
     throw new BadRequestError('this order already cancelled before');
+  }
+
+  if (order.status === OrderStatus.PaymentComplete) {
+    throw new BadRequestError('this order finished before');
   }
 
   let isRefunded = true;

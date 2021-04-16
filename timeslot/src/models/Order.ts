@@ -30,7 +30,7 @@ interface OrderDocument extends mongoose.Document {
     orderType: OrderTypes,
     countryName: string
   ): Boolean;
-
+  canReschedule(timeslot: TimeslotDocument): Boolean;
   canRefund(timeslot: TimeslotDocument): Boolean;
 }
 
@@ -100,6 +100,22 @@ OrderSchema.methods.isValidReschedule = function (timeslot) {
     // @ts-ignore
     this.status === OrderStatus.PaymentComplete
   );
+};
+
+OrderSchema.methods.canReschedule = function (timeslot) {
+  const fromBooking = moment
+    // @ts-ignore
+    .duration(moment(this.timeslot.start_time).diff(this.get('created_at')))
+    .asHours();
+
+  const fromNow = moment
+    // @ts-ignore
+    .duration(moment(this.timeslot.start_time).diff(moment()))
+    .asHours();
+
+  if (Math.floor(fromBooking) > 6 && Math.floor(fromNow) >= 7) return true;
+
+  return false;
 };
 
 OrderSchema.methods.setPrice = function (timeslot, orderType, countryName) {
