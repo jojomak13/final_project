@@ -1,11 +1,6 @@
 import { natsWrapper } from '@hti/common';
 const setup = async () => {
-  const envKey = [
-    'NATS_CLUSTER_ID',
-    'NATS_CLIENT_ID',
-    'NATS_URL',
-    'REDIS_HOST',
-  ];
+  const envKey = ['NATS_CLUSTER_ID', 'NATS_CLIENT_ID', 'NATS_URL'];
 
   try {
     envKey.forEach((key) => {
