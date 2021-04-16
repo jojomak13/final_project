@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mail-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mail
+  template:
+    metadata:
+      labels:
+        app: mail
+    spec:
+      containers:
+        - name: mail
+          image: jojomak/mail
+          env:
+            - name: NATS_URL
+              value: 'http://nats-service:4222'
+            - name: NATS_CLUSTER_ID
+              value: final_project
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: DB_URI
+              value: 'mongodb://mail-mongo-service:27017/mail'
+            - name: APP_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-key
+                  key: APP_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mail-service
+spec:
+  type: ClusterIP
+  selector:
+    app: mail
+  ports:
+    - name: mail
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
