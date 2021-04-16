@@ -8,6 +8,7 @@ import { Request, Response } from 'express';
 import { OrderCancelledPublisher } from '../events/publishers/OrderCancelledPublisher';
 import { OrderCreatedPublisher } from '../events/publishers/OrderCreatedPublisher';
 import { OrderRefundedPublisher } from '../events/publishers/OrderRefundedPublisher';
+import { OrderUpdatedPublisher } from '../events/publishers/OrderUpdatedPublisher';
 import { Order } from '../models/Order';
 import { Patient } from '../models/Patient';
 import { Timeslot } from '../models/Timeslot';
@@ -64,16 +65,9 @@ export const store = async (data: any, req: Request, res: Response) => {
 };
 
 export const reschedule = async (data: any, req: Request, res: Response) => {
-  //create new order AND get old one
   const timeslot = await Timeslot.findById(data.timeslot);
   const patient = await Patient.findById(req.user?.id);
-  const oldOrder = await Order.findById(req.params.id).populate('timeslot');
-
-  if (!timeslot) throw new NotFoundError();
-
-  if (timeslot.is_booked) {
-    throw new BadRequestError('This time slot already reserved before');
-  }
+  const order = await Order.findById(req.params.id).populate('timeslot');
 
   if (!patient) {
     throw new Error(
@@ -81,48 +75,37 @@ export const reschedule = async (data: any, req: Request, res: Response) => {
     );
   }
 
-  if(oldOrder?.timeslot.duration !== timeslot.duration){
-    throw new BadRequestError(`You Have to book duration of ${oldOrder?.timeslot.duration} minute`); 
-  }
+  if (!timeslot || !order) throw new NotFoundError();
 
-  const expiration = new Date();
-  expiration.setSeconds(
-    expiration.getSeconds() + parseInt(process.env.ORDER_EXPIRED_PERIOD!)
-  );
-
-  timeslot.set({ is_booked: true });
-
-  const newOrder = Order.build({
-    timeslot,
-    patient,
-    type: data.type,
-    status: OrderStatus.AwaitPayment,
-    expires_at: expiration,
-  });
-
-  // cancel old order
   if (
-    !oldOrder ||
-    !oldOrder.isValidReschedule(timeslot) ||
-    oldOrder.patient.toString() !== req.user?.id
+    !order.isValidReschedule(timeslot) ||
+    order.patient.toString() !== req.user?.id
   ) {
     throw new NotFoundError();
   }
 
-  if (oldOrder.status === OrderStatus.Canelled) {
-    throw new BadRequestError('this order already cancelled before');
+  if (timeslot.is_booked)
+    throw new BadRequestError('This time slot already reserved before');
+
+  if (order?.timeslot.duration !== timeslot.duration) {
+    throw new BadRequestError(
+      `You have to book duration of ${order?.timeslot.duration} minutes`
+    );
   }
 
-  oldOrder.set({ status: OrderStatus.Canelled });
-  oldOrder.timeslot.set({ is_booked: false });
-
-  // save new order data
-  await newOrder.save();
+  timeslot.set({ is_booked: true });
   await timeslot.save();
 
-  // save old order cancelation
-  await oldOrder.save();
-  await oldOrder.timeslot.save();
+  order.timeslot.set({ is_booked: false });
+  await order.timeslot.save();
+
+  order.set({ timeslot });
+  await order.save();
+
+  new OrderUpdatedPublisher(natsWrapper.client).publish({
+    id: order.id,
+    version: order.version,
+  });
 
   return res.json({
     status: true,

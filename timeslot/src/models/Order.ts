@@ -98,7 +98,7 @@ OrderSchema.methods.isValidReschedule = function (timeslot) {
     // @ts-ignore
     this.timeslot.doctor.toString() === timeslot.doctor.toString() &&
     // @ts-ignore
-    this.status === OrderStatus.Paid
+    this.status === OrderStatus.PaymentComplete
   );
 };
 
