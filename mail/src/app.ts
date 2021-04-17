@@ -1,7 +1,7 @@
 import express, { Express } from 'express';
 import 'express-async-errors';
 import { currentUser, errorHandler, NotFoundError } from '@hti/common';
-import { MessageClient } from "cloudmailin"
+// import { mail } from './Mailer';
 
 const app: Express = express();
 
@@ -15,16 +15,15 @@ app.use(() => {
   throw new NotFoundError();
 });
 
+// mail.connect({
+//   user: '03b881ad9f83a1',
+//   pass: '5964e160860839',
+// });
 
-const client = new MessageClient({ username: '2a506dea731b2f94', apiKey: '7qHELamP4oyk9LaFnb3aJGGW'});
-
-client.sendMessage({
-  to: 'youssefwilliam970@gmail.com',
-  from: 'project@test.test',
-//   plain: 'test message',
-  html:  '<h1>Test Message</h1>',
-  subject: "hello world"
-});
+// mail.sendTo('jojomak350@gmail.com', {
+//   subject: 'shit',
+//   body: 'shit  shit',
+// });
 
 // Error Handler
 app.use(errorHandler);
