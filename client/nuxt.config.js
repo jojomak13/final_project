@@ -14,7 +14,7 @@ export default {
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: [],
+  css: ['@/assets/scss/main.scss'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [],
@@ -42,13 +42,13 @@ export default {
         scheme: 'local',
         endpoints: {
           login: {
-            url: '/auth/patient/login',
+            url: '/patient/auth/login',
             method: 'post',
             propertyName: 'token',
           },
-          logout: { url: '/auth/patient/logout', method: 'post' },
+          logout: { url: '/patient/auth/logout', method: 'post' },
           user: {
-            url: '/auth/patient/user',
+            url: '/patient/auth/user',
             method: 'get',
             propertyName: 'user',
           },
@@ -58,13 +58,13 @@ export default {
         scheme: 'local',
         endpoints: {
           login: {
-            url: '/auth/doctor/login',
+            url: '/doctor/auth/login',
             method: 'post',
             propertyName: 'token',
           },
-          logout: { url: '/auth/doctor/logout', method: 'post' },
+          logout: { url: '/doctor/auth/logout', method: 'post' },
           user: {
-            url: '/auth/doctor/user',
+            url: '/doctor/auth/user',
             method: 'get',
             propertyName: 'user',
           },

@@ -1,0 +1,75 @@
+@import '~bulma/sass/utilities/_all';
+
+// Set your colors
+$primary: #1d73b5;
+$primary-light: findLightColor($primary);
+$primary-dark: findDarkColor($primary);
+$primary-invert: findColorInvert($primary);
+
+$info: #f39022;
+$info-light: findLightColor($info);
+$info-dark: findDarkColor($info);
+$info-invert: findColorInvert($info);
+
+// Setup $colors to use as bulma classes (e.g. 'is-twitter')
+$colors: mergeColorMaps(
+  (
+    'white': (
+      $white,
+      $black,
+    ),
+    'black': (
+      $black,
+      $white,
+    ),
+    'light': (
+      $light,
+      $light-invert,
+    ),
+    'dark': (
+      $dark,
+      $dark-invert,
+    ),
+    'primary': (
+      $primary,
+      $primary-invert,
+      $primary-light,
+      $primary-dark,
+    ),
+    'link': (
+      $link,
+      $link-invert,
+      $link-light,
+      $link-dark,
+    ),
+    'info': (
+      $info,
+      $info-invert,
+      $info-light,
+      $info-dark,
+    ),
+    'success': (
+      $success,
+      $success-invert,
+      $success-light,
+      $success-dark,
+    ),
+    'warning': (
+      $warning,
+      $warning-invert,
+      $warning-light,
+      $warning-dark,
+    ),
+    'danger': (
+      $danger,
+      $danger-invert,
+      $danger-light,
+      $danger-dark,
+    ),
+  ),
+  $custom-colors
+);
+
+// Import Bulma and Buefy styles
+@import '~bulma';
+@import '~buefy/src/scss/buefy';

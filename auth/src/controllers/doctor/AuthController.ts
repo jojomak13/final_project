@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken';
 import { Password } from '../../helpers/password';
 import { Doctor } from '../../models/Doctor';
 import { DoctorApprovedPublisher } from '../../events/publishers/DoctorApprovedPublisher';
+import { DoctorCreatedPublisher } from '../../events/publishers/DoctorCreatedPublisher';
 
 export const signup = async (data: any, _req: Request, res: Response) => {
   const doctor = await Doctor.findOne().or([
@@ -37,6 +38,12 @@ export const signup = async (data: any, _req: Request, res: Response) => {
     fees: newDoctor.fees,
     prefix: newDoctor.prefix,
     image: newDoctor.image,
+  });
+
+  new DoctorCreatedPublisher(natsWrapper.client).publish({
+    name: newDoctor.name,
+    email: newDoctor.email,
+    phone: newDoctor.phone,
   });
 
   return res.status(201).json({
