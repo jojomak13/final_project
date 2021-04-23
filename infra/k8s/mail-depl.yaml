@@ -31,17 +31,3 @@ spec:
                 secretKeyRef:
                   name: app-key
                   key: APP_KEY
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: mail-service
-spec:
-  type: ClusterIP
-  selector:
-    app: mail
-  ports:
-    - name: mail
-      protocol: TCP
-      port: 3000
-      targetPort: 3000
