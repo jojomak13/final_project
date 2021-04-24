@@ -1,6 +1,6 @@
-import { Listener, natsWrapper } from '@hti/common';
+import { natsWrapper } from '@hti/common';
+import { SendEmailListener } from './src/events/listeners/SendEmailListener';
 import { mail } from './src/Mailer';
-import Listeners from './src/events/listeners';
 
 const setup = async () => {
   const envKey = ['NATS_CLUSTER_ID', 'NATS_CLIENT_ID', 'NATS_URL'];
@@ -30,7 +30,7 @@ const setup = async () => {
     });
 
     // Start Listeners
-    Listeners();
+    new SendEmailListener(natsWrapper.client).listen();
 
     console.log('[Mail] service running');
   } catch (err) {

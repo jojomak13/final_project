@@ -26,7 +26,7 @@ class Mailer {
         to: mail, // list of receivers
         subject: data.subject,
         text: data.body,
-        html: '<h1>welcome</h1>',
+        html: data.body,
       },
       (err: any, _info: any) => {
         if (err) {

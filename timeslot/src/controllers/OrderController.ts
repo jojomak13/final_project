@@ -3,6 +3,7 @@ import {
   natsWrapper,
   NotFoundError,
   OrderStatus,
+  SendEmailPublisher,
 } from '@hti/common';
 import { Request, Response } from 'express';
 import { OrderCancelledPublisher } from '../events/publishers/OrderCancelledPublisher';
@@ -58,6 +59,12 @@ export const store = async (data: any, req: Request, res: Response) => {
     version: order.version,
   });
 
+  new SendEmailPublisher(natsWrapper.client).publish({
+    to: `${timeslot.doctor.email}, ${patient.email}`,
+    subject: 'New session booked',
+    body: `timeslot booked by ${patient.name} with Dr.${timeslot.doctor.name[0].value}`,
+  });
+
   res.status(201).json({
     status: true,
     msg: 'time slot booked successfully',
@@ -111,6 +118,12 @@ export const reschedule = async (data: any, req: Request, res: Response) => {
   new OrderUpdatedPublisher(natsWrapper.client).publish({
     id: order.id,
     version: order.version,
+  });
+
+  new SendEmailPublisher(natsWrapper.client).publish({
+    to: `${patient.email}, ${timeslot.doctor.email}`,
+    subject: 'Session Rescheduled',
+    body: `Session rescheduled to ${timeslot.start_time}`,
   });
 
   return res.json({

@@ -2,6 +2,7 @@ import {
   ExpirationCompleteEvent,
   Listener,
   OrderStatus,
+  SendEmailPublisher,
   Subjects,
 } from '@hti/common';
 import { Message } from 'node-nats-streaming';
@@ -14,7 +15,9 @@ class ExpirationCompleteListener extends Listener<ExpirationCompleteEvent> {
   public queueGroupName = queueGroupName;
 
   public async onMessage(data: ExpirationCompleteEvent['data'], msg: Message) {
-    const order = await Order.findById(data.orderId).populate('timeslot');
+    const order = await Order.findById(data.orderId).populate(
+      'timeslot patient'
+    );
 
     if (!order) {
       throw new Error('نصيبة سودة');
@@ -33,6 +36,12 @@ class ExpirationCompleteListener extends Listener<ExpirationCompleteEvent> {
     new OrderCancelledPublisher(this.client).publish({
       id: order.id,
       version: order.version,
+    });
+
+    new SendEmailPublisher(this.client).publish({
+      to: `${order.patient.email}`,
+      subject: 'Session Trial Time Expired',
+      body: 'Your session cancelled',
     });
 
     msg.ack();

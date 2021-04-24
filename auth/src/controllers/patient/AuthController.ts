@@ -1,5 +1,10 @@
 import { refreshTokenPayload } from '../../helpers/Auth';
-import { BadRequestError, DBValidationError, natsWrapper } from '@hti/common';
+import {
+  BadRequestError,
+  DBValidationError,
+  natsWrapper,
+  SendEmailPublisher,
+} from '@hti/common';
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { Password } from '../../helpers/password';
@@ -33,6 +38,12 @@ export const signup = async (data: any, req: Request, res: Response) => {
     email: newPatient.email,
     phone: newPatient.phone,
     image: newPatient.image,
+  });
+
+  new SendEmailPublisher(natsWrapper.client).publish({
+    to: newPatient.email,
+    subject: 'New Client Registered',
+    body: `Welcome ${newPatient.name} to our platform.`,
   });
 
   return res.status(201).json({

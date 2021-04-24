@@ -3,6 +3,7 @@ import {
   NotFoundError,
   OrderCancelledEvent,
   OrderStatus,
+  SendEmailPublisher,
   Subjects,
 } from '@hti/common';
 import { Message } from 'node-nats-streaming';

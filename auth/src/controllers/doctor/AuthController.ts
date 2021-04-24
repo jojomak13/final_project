@@ -1,11 +1,15 @@
 import { refreshTokenPayload } from '../../helpers/Auth';
-import { BadRequestError, DBValidationError, natsWrapper } from '@hti/common';
+import {
+  BadRequestError,
+  DBValidationError,
+  natsWrapper,
+  SendEmailPublisher,
+} from '@hti/common';
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { Password } from '../../helpers/password';
 import { Doctor } from '../../models/Doctor';
 import { DoctorApprovedPublisher } from '../../events/publishers/DoctorApprovedPublisher';
-import { DoctorCreatedPublisher } from '../../events/publishers/DoctorCreatedPublisher';
 
 export const signup = async (data: any, _req: Request, res: Response) => {
   const doctor = await Doctor.findOne().or([
@@ -40,10 +44,10 @@ export const signup = async (data: any, _req: Request, res: Response) => {
     image: newDoctor.image,
   });
 
-  new DoctorCreatedPublisher(natsWrapper.client).publish({
-    name: newDoctor.name,
-    email: newDoctor.email,
-    phone: newDoctor.phone,
+  new SendEmailPublisher(natsWrapper.client).publish({
+    to: newDoctor.email,
+    subject: 'Doctor Created',
+    body: `Welcome Dr.${newDoctor.name[0].value} to our platform.`,
   });
 
   return res.status(201).json({
