@@ -8,13 +8,8 @@ class OrderStartListener extends Listener<OrderStartEvent> {
   public queueGroupName = 'expiration-service';
 
   public async onMessage(data: OrderStartEvent['data'], msg: Message) {
-    const startTime = moment(data.timeslot.startTime);
-    const timeNow = moment(new Date());
 
-    console.log('start time', startTime.format('hh:mm:ss a Z'));
-    console.log('time now', timeNow.format('hh:mm:ss a Z'));
-
-    const delay = startTime.diff(timeNow);
+    const delay = new Date(data.timeslot.startTime).getTime() - new Date().getTime();
 
     console.log('delay', delay);
 
