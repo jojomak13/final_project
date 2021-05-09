@@ -1,5 +1,6 @@
 import { natsWrapper } from '@hti/common';
 import { OrderCreatedListener } from './src/events/listeners/OrderCreatedListener';
+import { OrderStartListener } from './src/events/listeners/OrderStartListener';
 
 const setup = async () => {
   const envKey = [
@@ -29,6 +30,7 @@ const setup = async () => {
     });
 
     new OrderCreatedListener(natsWrapper.client).listen();
+    new OrderStartListener(natsWrapper.client).listen();
   } catch (err) {
     console.log(err.message);
   }
